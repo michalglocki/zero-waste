@@ -1,0 +1,25 @@
+[2026-05-27T21:16:42.6559846+02:00] Root: C:\Users\mglocki\zero-waste
+[2026-05-27T21:16:46.3667617+02:00] Pre-scaffold: create-expo-app version=4.0.0 modified=2026-05-15T22:46:00.140Z
+[2026-05-27T21:16:46.3687603+02:00] Running: npx create-expo-app .bootstrap-scaffold --yes --template default
+[2026-05-27T21:18:09.2160667+02:00] create-expo-app exit code: 0
+[2026-05-27T21:18:09.2542894+02:00] Moved: .claude
+[2026-05-27T21:18:09.2602925+02:00] Skip .git from scaffold
+[2026-05-27T21:18:09.2662905+02:00] Moved: .vscode
+[2026-05-27T21:18:09.2722908+02:00] Moved: assets
+[2026-05-27T21:18:09.3292957+02:00] Moved: node_modules
+[2026-05-27T21:18:09.3367387+02:00] Conflict: scripts -> scripts.scaffold
+[2026-05-27T21:18:09.3427499+02:00] Moved: src
+[2026-05-27T21:18:09.3530303+02:00] Moved: .gitignore
+[2026-05-27T21:18:09.3600306+02:00] Moved: AGENTS.md
+[2026-05-27T21:18:09.3682894+02:00] Moved: app.json
+[2026-05-27T21:18:09.3752910+02:00] Moved: CLAUDE.md
+[2026-05-27T21:18:09.3812897+02:00] Moved: LICENSE
+[2026-05-27T21:18:09.3872904+02:00] Moved: package-lock.json
+[2026-05-27T21:18:09.3942891+02:00] Moved: package.json
+[2026-05-27T21:18:09.4012931+02:00] Moved: README.md
+[2026-05-27T21:18:09.4082953+02:00] Moved: tsconfig.json
+[2026-05-27T21:18:09.5165042+02:00] Removed .bootstrap-scaffold
+[2026-05-27T21:18:09.5197651+02:00] Files moved/merged: 14; conflicts: scripts
+[2026-05-27T21:18:09.5227635+02:00] Running npm audit --json
+[2026-05-27T21:18:11.5510165+02:00] npm audit written to npm-audit.json (exit 1)
+[2026-05-27T21:18:11.5550193+02:00] Done. Re-invoke /10x-bootstrapper in Cursor to write verification.md, or review npm-audit.json
