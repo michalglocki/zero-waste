@@ -160,10 +160,19 @@ Cloudflare dashboard → **Workers & Pages** → `zero-waste-api` → **Settings
 
 **GitHub App:** first Connect may prompt to install **Cloudflare Workers & Pages** on `michalglocki/zero-waste` — approve repository access.
 
-- [ ] Git connected in Builds
-- [ ] Settings saved as above
-- [ ] Push/commit on `main` triggers a successful Build
+- [x] Git connected in Builds — confirmed by user; GitHub check run `Workers Builds: zero-waste-api` fired on `f90842f`
+- [x] Settings saved as above — Connect confirmed; first build failed on broken submodule (see below)
+- [ ] Push/commit on `main` triggers a successful Build — retry after removing broken `context/foundation` gitlink
 - [ ] Active Deployment updates after Build
+
+**Failed build (root cause identified):**  
+https://dash.cloudflare.com/1b65ac8983e0728c5e964642b62f822f/workers/services/view/zero-waste-api/production/builds/e9f3a670-a3da-470c-ba33-63a45c6515ae
+
+```
+Failed: error occurred while updating repository submodules
+```
+
+Cause: `context/foundation` was a **gitlink (mode 160000)** without `.gitmodules` / reachable submodule remote. Cloudflare Builds runs `git submodule update` and aborts. Fix: replace gitlink with normal tracked foundation markdown files (no nested `.git`).
 
 **Explicit non-goal:** do **not** add `.github/workflows` for Worker deploy in this plan.
 
@@ -231,5 +240,5 @@ Tokens: scoped, not master keys. Never commit secrets or `.dev.vars`. Agents may
 | 2026-09-02 | Registered `workers.dev` subdomain | `zero-waste-mglocki` |
 | 2026-09-02 | Scaffold `workers/api` | Done (`zero-waste-api`, no nested git) |
 | 2026-09-02 | First `wrangler deploy` | Live at `https://zero-waste-api.zero-waste-mglocki.workers.dev` (200 Hello World!) |
-| | Workers Builds connected | Blocked on Human dashboard Connect Git (Builds API 403 with Wrangler OAuth) |
-| | Auto-deploy verified | _pending_ |
+| 2026-09-02 | Workers Builds connected | Git connected; check run fires on push |
+| 2026-09-02 | Auto-deploy verify push `f90842f` | Build `e9f3a670-…` **failed in 0s** — awaiting dashboard error / settings fix |
