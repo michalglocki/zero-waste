@@ -1,5 +1,8 @@
 # Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
 
+# Cursor / AI tooling
+.cursor/
+
 # dependencies
 node_modules/
 
@@ -32,6 +35,13 @@ yarn-error.*
 
 # local env files
 .env*.local
+
+# Cloudflare Workers / Wrangler
+.wrangler/
+.dev.vars
+.dev.vars*
+workers/**/node_modules/
+workers/**/.wrangler/
 
 # typescript
 *.tsbuildinfo
