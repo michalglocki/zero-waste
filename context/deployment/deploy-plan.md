@@ -160,19 +160,21 @@ Cloudflare dashboard → **Workers & Pages** → `zero-waste-api` → **Settings
 
 **GitHub App:** first Connect may prompt to install **Cloudflare Workers & Pages** on `michalglocki/zero-waste` — approve repository access.
 
-- [x] Git connected in Builds — confirmed by user; GitHub check run `Workers Builds: zero-waste-api` fired on `f90842f`
-- [x] Settings saved as above — Connect confirmed; first build failed on broken submodule (see below)
-- [ ] Push/commit on `main` triggers a successful Build — retry after removing broken `context/foundation` gitlink
-- [ ] Active Deployment updates after Build
+- [x] Git connected in Builds — confirmed by user; GitHub check run `Workers Builds: zero-waste-api` fires on push
+- [x] Settings saved as above — Connect confirmed; root `/` + root `wrangler.jsonc` (or `workers/api` root) required
+- [x] Push/commit on `main` triggers a successful Build — `06ed4a3` → Build `9cf494f0-5e80-4cb1-b197-f91ed88de1f0` **success**
+- [x] Active Deployment updates after Build — version `4a19bfd5-87a7-4ed7-8757-d94ae00bc606` @ `2026-09-02T20:33:13Z`
 
-**Failed build (root cause identified):**  
+**Earlier failed build (fixed):**  
 https://dash.cloudflare.com/1b65ac8983e0728c5e964642b62f822f/workers/services/view/zero-waste-api/production/builds/e9f3a670-a3da-470c-ba33-63a45c6515ae
 
 ```
 Failed: error occurred while updating repository submodules
 ```
 
-Cause: `context/foundation` was a **gitlink (mode 160000)** without `.gitmodules` / reachable submodule remote. Cloudflare Builds runs `git submodule update` and aborts. Fix: replace gitlink with normal tracked foundation markdown files (no nested `.git`).
+Cause: `context/foundation` was a **gitlink (mode 160000)** without `.gitmodules`. Fix: track foundation markdown as normal files.
+
+**Follow-on:** first successful Builds deploy (root `/`, no root wrangler) Expo-autoconfig'd HTML onto the Worker. Mitigated by adding root [`wrangler.jsonc`](../../wrangler.jsonc) pointing at `workers/api/src/index.ts`.
 
 **Explicit non-goal:** do **not** add `.github/workflows` for Worker deploy in this plan.
 
@@ -182,11 +184,23 @@ Cause: `context/foundation` was a **gitlink (mode 160000)** without `.gitmodules
 
 Owner: **Agent** (+ Human if Build needs dashboard confirmation)
 
-- [ ] Trigger: merge/push to `main` touching `workers/api` (or empty commit only if needed)
-- [ ] Build status = success in Cloudflare Builds
-- [ ] `npx wrangler deployments list` shows new deployment
-- [ ] `curl` still returns hello
-- [ ] Update Deploy record table above with final URL + timestamps
+- [x] Trigger: push to `main` (`06ed4a3` — root wrangler.jsonc + worker body)
+- [x] Build status = success — Build ID `9cf494f0-5e80-4cb1-b197-f91ed88de1f0`
+- [x] `npx wrangler deployments list` shows new deployment — `4a19bfd5-87a7-4ed7-8757-d94ae00bc606`
+- [x] Live URL returns hello — `Hello from zero-waste-api` (HTTP 200)
+- [x] Update Deploy record table above with final URL + timestamps
+
+### Deploy record (final)
+
+| Field | Value |
+| --- | --- |
+| Worker name | `zero-waste-api` |
+| Worker tag | `233a971954614982932fcfe7a02a5834` |
+| workers.dev URL | `https://zero-waste-api.zero-waste-mglocki.workers.dev` |
+| First manual deploy | `2026-09-02T19:47:49Z` / `97c587dd-…` |
+| Verified CI deploy | `2026-09-02T20:33:13Z` / `4a19bfd5-…` |
+| Auto-deploy mechanism | Cloudflare Workers Builds (Git → `main`) |
+| Rollback tested | _not yet_ |
 
 ---
 
@@ -241,4 +255,7 @@ Tokens: scoped, not master keys. Never commit secrets or `.dev.vars`. Agents may
 | 2026-09-02 | Scaffold `workers/api` | Done (`zero-waste-api`, no nested git) |
 | 2026-09-02 | First `wrangler deploy` | Live at `https://zero-waste-api.zero-waste-mglocki.workers.dev` (200 Hello World!) |
 | 2026-09-02 | Workers Builds connected | Git connected; check run fires on push |
-| 2026-09-02 | Auto-deploy verify push `f90842f` | Build `e9f3a670-…` **failed in 0s** — awaiting dashboard error / settings fix |
+| 2026-09-02 | Auto-deploy verify push `f90842f` | Build `e9f3a670-…` failed: submodule update |
+| 2026-09-02 | Removed broken `context/foundation` gitlink | Foundation docs tracked as normal files |
+| 2026-09-02 | Build `ebaa4fd` | success but Expo-autoconfig overwrote Worker (root `/`, no wrangler.jsonc) |
+| 2026-09-02 | Added root `wrangler.jsonc` + push `06ed4a3` | Build `9cf494f0-…` **success**; live `Hello from zero-waste-api` |
