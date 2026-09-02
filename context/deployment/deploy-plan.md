@@ -149,8 +149,8 @@ Cloudflare dashboard → **Workers & Pages** → `zero-waste-api` → **Settings
 | --- | --- |
 | Git repository | `michalglocki/zero-waste` |
 | Production branch | `main` |
-| Root directory | `workers/api` |
-| Build command | `npm ci` |
+| Root directory | Prefer `workers/api`. If left as `/`, root [`wrangler.jsonc`](../../wrangler.jsonc) must exist so Builds does **not** Expo-autoconfig the app onto this Worker |
+| Build command | _(empty)_ or `npm ci` when root is `workers/api` |
 | Deploy command | `npx wrangler deploy` |
 | Non-production deploy | `npx wrangler versions upload` |
 | Non-production branch builds | Enabled (for PR preview versions) |

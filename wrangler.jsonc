@@ -1,0 +1,8 @@
+{
+	"name": "zero-waste-api",
+	"main": "workers/api/src/index.ts",
+	"compatibility_date": "2026-09-02",
+	"observability": {
+		"enabled": true
+	}
+}
