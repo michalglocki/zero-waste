@@ -1,6 +1,6 @@
 ---
 project: Zero waste
-version: 2
+version: 6
 status: draft
 created: 2026-05-26
 updated: 2026-09-03
@@ -44,6 +44,7 @@ Home inventory is a household problem: stock must be visible and updatable by an
 
 - Barcode scanning adds products quickly and reliably for everyday use.
 - After a scan, the app looks up the barcode in Open Food Facts and fills known product fields when available.
+- A separate recommendations section lists products that look almost empty (quantity 1 and last removal later than that product’s average interval).
 
 ### Guardrails
 
@@ -64,6 +65,12 @@ Home inventory is a household problem: stock must be visible and updatable by an
 - **When** the app looks up that barcode in Open Food Facts
 - **Then** the product record stores the barcode code and, when the API returns them, optional name, main category, and auxiliary category; when the API returns no match or omits a field, that field remains empty
 
+### US-03: See products likely almost empty
+
+- **Given** a logged-in household member and stored remove history for household products
+- **When** they open the recommendations section
+- **Then** they see products whose quantity is 1 and whose time since last removal is greater than that product’s average interval between removals (high probability the pack is almost empty)
+
 ## Functional Requirements
 
 ### Stock list & search
@@ -77,18 +84,25 @@ Home inventory is a household problem: stock must be visible and updatable by an
 
 - FR-003: Household member can add a product to stock by scanning its barcode. Priority: must-have
   > Socrates: Counter-argument considered: "barcode fails on fresh produce / bulk items without barcodes." Resolution: kept — barcode is primary add path; manual add for non-barcoded items required in MVP (see Non-Goals; FR-005).
-- FR-004: Household member can remove a product from the stock list. Priority: must-have
-  > Socrates: Counter-argument considered: "decrement quantity beats remove for used-up items." Resolution: kept — remove stays in MVP; quantity/decrement model deferred to Open Questions.
+- FR-004: Household member can decrease stock of a listed product by 1; if quantity is then 0, the list row is removed. Priority: must-have
+  > Socrates: Counter-argument considered: "decrement quantity beats remove for used-up items." Resolution (2026-09-03): both — remove always decrements quantity by 1; when quantity reaches 0 the entire position is deleted.
 - FR-005: Household member can add a product to stock manually when no barcode is available. Priority: must-have
   > Socrates: Counter-argument considered: "manual entry creates duplicate or inconsistent product names." Resolution: kept — required for produce/bulk; duplicate handling stays in Open Questions with FR-002.
+  > Manual add fields (resolved 2026-09-03): barcode number (typed; may be empty when none exists) and quantity. No unit of measure in MVP.
 
 ### Product identity (barcode → Open Food Facts)
 
 - FR-006: After a barcode is scanned, the app identifies the product by looking it up in Open Food Facts. Priority: must-have
   > Socrates: Counter-argument considered: "offline aisle / API miss blocks add." Resolution: kept — lookup is best-effort; add still proceeds with empty optional fields when data is missing (FR-007, FR-008).
-- FR-007: A product record includes: product code (barcode); name (optional); main category (optional, e.g. cosmetics, food/groceries); auxiliary category (optional, audience such as women’s, men’s, universal, for children). Priority: must-have
+- FR-007: A product record includes: product code (barcode); quantity (numeric amount only — no unit in MVP); name (optional); main category (optional, e.g. cosmetics, food/groceries); auxiliary category (optional, audience such as women’s, men’s, universal, for children). Priority: must-have
 - FR-008: When Open Food Facts returns no product or omits a field, the corresponding optional fields remain empty (null/blank); the product code from the scan is still stored when a barcode was scanned. Priority: must-have
   > Socrates: Counter-argument considered: "force user to fill name/category before save." Resolution: rejected for MVP — empty fields keep aisle friction low; manual edit can follow later if needed.
+
+### Utilization history & recommendations
+
+- FR-009: Each remove operation (quantity decreased by 1) is stored as a utilization event. Priority: must-have
+- FR-010: After each removal, product utilization frequency is calculated asynchronously and updated on the stock element. Priority: must-have
+- FR-011: Household member can open a separate recommendations section that lists products whose quantity is 1 and whose last removal is later than that product’s average interval between removals. Priority: must-have
 
 ## Non-Functional Requirements
 
@@ -96,15 +110,17 @@ Home inventory is a household problem: stock must be visible and updatable by an
 
 ## Business Logic
 
-The application validates whether the household already has enough of a product before the user buys more.
+The application does **not** impose an “enough” threshold or warn the user to skip a purchase. Each household member decides for themselves after seeing current stock.
 
-**Inputs (user-facing):** Current household stock (what is on hand), the product the user is considering (e.g. via search or barcode while shopping or planning), and thresholds for “enough” per product (exact threshold model TBD).
+**Inputs (user-facing):** Current household stock for the item they looked up (search or barcode) and, when those rows can be identified, stock of similar items already on the list.
 
-**Output:** A clear signal when stock is already sufficient — so the user can skip buying and avoid gathering unneeded resources.
+**Output:** Displayed stock — not an application judgment. The user uses that picture to decide whether to buy more.
 
-**How the user encounters it:** While shopping away from home or planning a list at home, after viewing/searching stock or scanning a barcode, the user sees whether they already have enough before adding to cart or list.
+**How the user encounters it:** While shopping away from home or planning a list at home, they view or search stock (and see similar items when identity makes that possible). The decision to buy or skip stays with them.
 
-**Barcode identification:** On scan, the app queries Open Food Facts with the barcode. Returned attributes map onto the product fields in FR-007 when present; absent attributes stay empty (FR-008). Identification does not replace the “enough stock” check — it only enriches the product record used in that check and in the stock list.
+**Barcode identification:** On scan, the app queries Open Food Facts with the barcode. Returned attributes map onto the product fields in FR-007 when present; absent attributes stay empty (FR-008). Identification helps the user recognize the item and related rows on the list; it does not drive an app-defined “enough” rule.
+
+**Utilization and recommendations:** Every remove is stored. After each removal, utilization frequency is recalculated asynchronously and stored on the stock element. A separate recommendations section lists products with quantity 1 whose time since last removal is greater than that product’s average interval between removals — a high-probability “almost empty” hint. This is not an “enough” threshold on lookup (see resolved Open Question 1); it is an optional list the user can open.
 
 ## Access Control
 
@@ -114,17 +130,19 @@ The application validates whether the household already has enough of a product 
 
 ## Non-Goals
 
-- **Avoid:** Buy recommendations from low-stock and removal-frequency signals — deferred beyond MVP; validation-only first.
+- **Avoid:** An application-defined “enough” threshold, count, or skip-purchase warning — the user judges from displayed stock. The recommendations section (FR-011) is a separate, optional list, not a block on add or lookup.
+- **Avoid:** Recommendation signals other than stored removals, async frequency on the stock element, quantity = 1, and last removal later than the product’s average interval (e.g. location or demographic prediction stays out).
 - **Avoid:** Classification by location (kitchen, bathroom, home) and by household-member demographics for need prediction — deferred beyond MVP. (Product-level main/auxiliary categories from Open Food Facts in FR-007 are identity metadata, not this deferred prediction model.)
+- **Avoid:** Units of measure in MVP — stock amount is quantity only; unit may be an option later.
 - **Avoid:** Shipping a barcode-only MVP with no manual add path — non-barcoded items (e.g. fresh produce) must be addable by hand.
 - **Avoid:** Requiring the user to complete empty Open Food Facts fields before the product can be saved — empty optional fields are valid in MVP.
 
 ## Open Questions
 
-1. **“Enough” threshold** — How is “enough” defined per product (fixed count, user-set, category default)? Owner: product. Blocks: validation rule implementation.
-2. **Manual add UX** — What fields are required for manual add (name only, quantity, unit)? Owner: product. Blocks: FR-005 implementation detail.
-3. **Quantity vs remove** — Should “used up” decrement quantity instead of (or in addition to) remove? Owner: product. Blocks: FR-004 behavior.
-4. **Recommendation (v2)** — What signals define “low stock” and “frequency of removing” for buy suggestions? Owner: product.
+1. **“Enough” threshold** — **Resolved (2026-09-03):** the app does not impose a threshold. The user decides from displayed stock of the searched item and of similar items when those can be identified. Owner: product. Blocks: none.
+2. **Manual add UX** — **Resolved (2026-09-03):** manual add considers barcode number and quantity. Quantity is the only amount field; unit of measure is out of MVP (optional later). Barcode may be empty when none exists (FR-005). Owner: product. Blocks: none.
+3. **Quantity vs remove** — **Resolved (2026-09-03):** remove always decreases quantity by 1. If quantity is then 0, the entire list position is deleted. Owner: product. Blocks: none.
+4. **Recommendation signals** — **Resolved (2026-09-03):** store each remove; compute utilization frequency asynchronously after each removal and update the stock element; recommendations section shows quantity = 1 and last removal later than the product’s average interval between removals. Owner: product. Blocks: none.
 5. **Classification (v2)** — Which locations and user dimensions are required at launch vs optional? Owner: product.
 6. **Open Food Facts field mapping** — Exactly which OFF attributes map to name, main category, and auxiliary category (and closed enum values for those categories)? Owner: product + eng. Blocks: FR-006/FR-007 implementation.
 7. **Non-food barcodes** — Open Food Facts coverage is food-heavy; cosmetics and other non-food may miss often. Is Open Beauty Facts (or another catalog) in scope for MVP, or is empty-fields fallback enough? Owner: product. Blocks: enrichment completeness expectations.
