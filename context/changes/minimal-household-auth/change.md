@@ -1,9 +1,9 @@
 ---
 change_id: minimal-household-auth
 title: Minimal login tied to one shared household
-status: plan_reviewed
+status: implementing
 created: 2026-09-03
-updated: 2026-09-03
+updated: 2026-09-04
 archived_at: null
 ---
 
@@ -11,4 +11,6 @@ archived_at: null
 
 Roadmap F-01. Decisions from `/10x-plan`: email/password (confirm email off for MVP); auto-create household on signup; join via invite code with membership move; hard session+membership gate; schema = households/memberships/RLS helpers only (stock deferred to S-01); verify with manual two-user script + lint/typecheck.
 
-Plan review in progress (`reviews/plan-review.md`): F1/F4 fixed via Fix A; F2/F3/F5/F6 still PENDING.
+**Auth prerequisite (MVP):** disable Confirm email in the Supabase Auth dashboard for the project used by `.env.local`. Re-enable intentionally later (will break session-on-signup without a confirm interstitial).
+
+**Env:** copy `.env.example` → `.env.local` and set `EXPO_PUBLIC_SUPABASE_URL` + `EXPO_PUBLIC_SUPABASE_ANON_KEY` only (never the service role).

@@ -1,0 +1,8 @@
+# Minimal Supabase CLI config for this repo's migrations.
+# Auth "Confirm email" must be OFF in the hosted dashboard for MVP demos
+# (CLI config does not replace that project setting).
+
+project_id = "zero-waste"
+
+[db]
+major_version = 15

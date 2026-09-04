@@ -361,14 +361,14 @@ Membership fetch is a single-row read; keep the post-auth retry short (low hundr
 
 #### Automated
 
-- [ ] 1.1 Migration applies cleanly via Supabase CLI or SQL editor without errors
-- [ ] 1.2 `supabase/` migration file exists and is committed with the change
+- [x] 1.1 Migration applies cleanly via Supabase CLI or SQL editor without errors
+- [x] 1.2 `supabase/` migration file exists and is committed with the change
 
 #### Manual
 
-- [ ] 1.3 Confirm-email is off in the Supabase Auth settings for the MVP project
-- [ ] 1.4 Dashboard shows `households` and `memberships` with RLS enabled
-- [ ] 1.5 Creating a user in Auth produces a household + membership row
+- [x] 1.3 Confirm-email is off in the Supabase Auth settings for the MVP project
+- [x] 1.4 Dashboard shows `households` and `memberships` with RLS enabled
+- [x] 1.5 Creating a user in Auth produces a household + membership row
 
 ### Phase 2: Expo client + session providers
 

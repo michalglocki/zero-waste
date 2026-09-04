@@ -3,7 +3,7 @@ project: Zero waste
 version: 1
 status: draft
 created: 2026-09-03
-updated: 2026-09-03
+updated: 2026-09-04
 prd_version: 6
 main_goal: low-complexity
 top_blocker: time
@@ -41,7 +41,7 @@ Household members forget what they already have when they shop or plan a list, s
 
 | ID | Change ID | Outcome (user can …) | Prerequisites | PRD refs | Status |
 | ----- | ---------------------- | --------------------------------- | ---------------- | -------------- | -------- |
-| F-01 | minimal-household-auth | (foundation) a signed-in user is tied to one household so stock can be shared | — | Access Control | planning |
+| F-01 | minimal-household-auth | (foundation) a signed-in user is tied to one household so stock can be shared | — | Access Control | in-progress |
 | S-01 | stock-list-search-barcode-add | view household stock, search it, and add a product by scanning its barcode | F-01 | US-01, FR-001, FR-002, FR-003, FR-007, FR-008 | proposed |
 | S-02 | barcode-open-food-facts-identify | after a scan, store the barcode and fill known name/category fields from Open Food Facts when present | S-01 | US-02, FR-006, FR-007, FR-008 | blocked |
 | S-03 | remove-stock-item | decrease stock by 1; store the remove; drop the row when quantity hits 0 | S-01 | US-01, FR-004, FR-009 | proposed |
@@ -74,7 +74,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Unknowns:**
   - Exact sign-in mechanism (email/password, OAuth, or passwordless) is TBD in the PRD — Owner: team. Block: no.
 - **Risk:** Sequenced first because US-01’s Given is a logged-in household member; without this contract, stock slices cannot be planned as shared. Keep the contract minimal (membership + session), not a full account-admin surface — after-hours time is the #1 risk.
-- **Status:** planning
+- **Status:** in-progress
 
 ## Slices
 
