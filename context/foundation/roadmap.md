@@ -42,7 +42,7 @@ Household members forget what they already have when they shop or plan a list, s
 | ID | Change ID | Outcome (user can …) | Prerequisites | PRD refs | Status |
 | ----- | ---------------------- | --------------------------------- | ---------------- | -------------- | -------- |
 | F-01 | minimal-household-auth | (foundation) a signed-in user is tied to one household so stock can be shared | — | Access Control | in-progress |
-| S-01 | stock-list-search-barcode-add | view household stock, search it, and add a product by scanning its barcode | F-01 | US-01, FR-001, FR-002, FR-003, FR-007, FR-008 | proposed |
+| S-01 | stock-list-search-barcode-add | view household stock, search it, and add a product by scanning its barcode | F-01 | US-01, FR-001, FR-002, FR-003, FR-007, FR-008 | planning |
 | S-02 | barcode-open-food-facts-identify | after a scan, store the barcode and fill known name/category fields from Open Food Facts when present | S-01 | US-02, FR-006, FR-007, FR-008 | blocked |
 | S-03 | remove-stock-item | decrease stock by 1; store the remove; drop the row when quantity hits 0 | S-01 | US-01, FR-004, FR-009 | proposed |
 | S-04 | manual-add-without-barcode | add a product by hand (barcode number + quantity; no unit) | S-01 | FR-005, FR-007, FR-008 | proposed |
@@ -91,7 +91,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
   - “Similar items” are whatever list/search already shows; no separate matcher in this slice. Richer identity (categories) arrives in S-02 — Owner: team. Block: no.
   - Stock amount is quantity only (no unit); barcode-add records quantity the same way as manual add — Owner: team. Block: no.
 - **Risk:** This is the north star and the must-have path — the set of capabilities the Success Criteria say must work at first ship — so it sits immediately after auth. Combining list, search, and barcode-add matches US-01 and is the surface the user uses to decide “enough” (no app-imposed threshold). Catalog enrichment is split out so this slice stays plannable under a tight after-hours budget. Persistence for the stock list lands here (first slice that needs it), not as a separate layer project.
-- **Status:** proposed
+- **Status:** planning
 
 ### S-02: Identify a scanned product via Open Food Facts
 
