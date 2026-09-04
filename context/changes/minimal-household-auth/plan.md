@@ -416,10 +416,10 @@ Membership fetch is a single-row read; keep the post-auth retry short (low hundr
 
 #### Automated
 
-- [x] 5.1 `npm run lint` passes
-- [x] 5.2 `npm run typecheck` passes
+- [x] 5.1 `npm run lint` passes — a19103d
+- [x] 5.2 `npm run typecheck` passes — a19103d
 
 #### Manual
 
-- [x] 5.3 Two-user checklist executed end-to-end
-- [x] 5.4 Results noted in change Notes or verification file
+- [x] 5.3 Two-user checklist executed end-to-end — a19103d
+- [x] 5.4 Results noted in change Notes or verification file — a19103d

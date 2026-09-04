@@ -1,7 +1,7 @@
 ---
 change_id: minimal-household-auth
 title: Minimal login tied to one shared household
-status: implementing
+status: implemented
 created: 2026-09-03
 updated: 2026-09-04
 archived_at: null
