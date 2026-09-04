@@ -20,3 +20,5 @@ Roadmap F-01. Decisions from `/10x-plan`: email/password (confirm email off for 
 **Phase 3:** `(auth)` / `(app)` / `bootstrap-household` via `Stack.Protected`; SplashScreen hydrate gate; home has Sign out for verification (household invite UI is Phase 4).
 
 **Phase 4:** Household home shows invite code + join form; web `(app)` uses Stack (`_layout.web.tsx`) because headless Tabs hrefs resolved to +not-found after the Protected group move.
+
+**Phase 5:** `npm run typecheck` wired; two-user checklist in `manual-verification.md` — executed pass 2026-09-04.

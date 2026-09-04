@@ -401,25 +401,25 @@ Membership fetch is a single-row read; keep the post-auth retry short (low hundr
 
 #### Automated
 
-- [x] 4.1 `npm run lint` passes
-- [x] 4.2 `npm run typecheck` passes
+- [x] 4.1 `npm run lint` passes — a73f990
+- [x] 4.2 `npm run typecheck` passes — a73f990
 
 #### Manual
 
-- [x] 4.3 User A sees an invite code after signup
-- [x] 4.4 User B joins A’s code and shows A’s household id/code
-- [x] 4.5 B’s original solo household is deleted when empty
-- [x] 4.6 Re-joining the same code is a no-op success
-- [x] 4.7 Invalid code shows an error and does not change membership
+- [x] 4.3 User A sees an invite code after signup — a73f990
+- [x] 4.4 User B joins A’s code and shows A’s household id/code — a73f990
+- [x] 4.5 B’s original solo household is deleted when empty — a73f990
+- [x] 4.6 Re-joining the same code is a no-op success — a73f990
+- [x] 4.7 Invalid code shows an error and does not change membership — a73f990
 
 ### Phase 5: Verification script + typecheck wiring
 
 #### Automated
 
-- [ ] 5.1 `npm run lint` passes
-- [ ] 5.2 `npm run typecheck` passes
+- [x] 5.1 `npm run lint` passes
+- [x] 5.2 `npm run typecheck` passes
 
 #### Manual
 
-- [ ] 5.3 Two-user checklist executed end-to-end
-- [ ] 5.4 Results noted in change Notes or verification file
+- [x] 5.3 Two-user checklist executed end-to-end
+- [x] 5.4 Results noted in change Notes or verification file
