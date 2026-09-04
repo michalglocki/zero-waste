@@ -361,22 +361,22 @@ Membership fetch is a single-row read; keep the post-auth retry short (low hundr
 
 #### Automated
 
-- [x] 1.1 Migration applies cleanly via Supabase CLI or SQL editor without errors
-- [x] 1.2 `supabase/` migration file exists and is committed with the change
+- [x] 1.1 Migration applies cleanly via Supabase CLI or SQL editor without errors — 2c93346
+- [x] 1.2 `supabase/` migration file exists and is committed with the change — 2c93346
 
 #### Manual
 
-- [x] 1.3 Confirm-email is off in the Supabase Auth settings for the MVP project
-- [x] 1.4 Dashboard shows `households` and `memberships` with RLS enabled
-- [x] 1.5 Creating a user in Auth produces a household + membership row
+- [x] 1.3 Confirm-email is off in the Supabase Auth settings for the MVP project — 2c93346
+- [x] 1.4 Dashboard shows `households` and `memberships` with RLS enabled — 2c93346
+- [x] 1.5 Creating a user in Auth produces a household + membership row — 2c93346
 
 ### Phase 2: Expo client + session providers
 
 #### Automated
 
-- [ ] 2.1 `npx tsc --noEmit` / `npm run typecheck` passes
-- [ ] 2.2 `npm run lint` passes
-- [ ] 2.3 App starts with valid `.env.local` without crashing on import of the client
+- [x] 2.1 `npx tsc --noEmit` / `npm run typecheck` passes
+- [x] 2.2 `npm run lint` passes
+- [x] 2.3 App starts with valid `.env.local` without crashing on import of the client
 
 #### Manual
 

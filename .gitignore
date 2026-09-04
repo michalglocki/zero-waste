@@ -43,6 +43,9 @@ yarn-error.*
 workers/**/node_modules/
 workers/**/.wrangler/
 
+# Supabase CLI
+supabase/.temp/
+
 # typescript
 *.tsbuildinfo
 

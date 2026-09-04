@@ -13,4 +13,6 @@ Roadmap F-01. Decisions from `/10x-plan`: email/password (confirm email off for 
 
 **Auth prerequisite (MVP):** disable Confirm email in the Supabase Auth dashboard for the project used by `.env.local`. Re-enable intentionally later (will break session-on-signup without a confirm interstitial).
 
-**Env:** copy `.env.example` → `.env.local` and set `EXPO_PUBLIC_SUPABASE_URL` + `EXPO_PUBLIC_SUPABASE_ANON_KEY` only (never the service role).
+**Env:** copy `.env.example` → `.env.local` and set `EXPO_PUBLIC_SUPABASE_URL` + `EXPO_PUBLIC_SUPABASE_ANON_KEY` only (never the service role). Client also accepts `EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY` as a fallback.
+
+**Phase 2 note:** web auth storage uses browser `localStorage` (`.web.ts`); native uses `expo-sqlite/localStorage/install` so Expo Router static SSR does not pull WASM.

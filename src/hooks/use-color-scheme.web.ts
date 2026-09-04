@@ -8,6 +8,8 @@ export function useColorScheme() {
   const [hasHydrated, setHasHydrated] = useState(false);
 
   useEffect(() => {
+    // Web SSR/static export needs a client-only flip; starter pattern.
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- hydrate gate for static web
     setHasHydrated(true);
   }, []);
 
