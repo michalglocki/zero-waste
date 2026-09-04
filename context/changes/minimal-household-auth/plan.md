@@ -374,28 +374,28 @@ Membership fetch is a single-row read; keep the post-auth retry short (low hundr
 
 #### Automated
 
-- [x] 2.1 `npx tsc --noEmit` / `npm run typecheck` passes
-- [x] 2.2 `npm run lint` passes
-- [x] 2.3 App starts with valid `.env.local` without crashing on import of the client
+- [x] 2.1 `npx tsc --noEmit` / `npm run typecheck` passes — 89b79e3
+- [x] 2.2 `npm run lint` passes — 89b79e3
+- [x] 2.3 App starts with valid `.env.local` without crashing on import of the client — 89b79e3
 
 #### Manual
 
-- [ ] 2.4 Session persists across app reload after signup
-- [ ] 2.5 Membership row is readable from the client after signup
+- [x] 2.4 Session persists across app reload after signup
+- [x] 2.5 Membership row is readable from the client after signup
 
 ### Phase 3: Route gate + auth UI
 
 #### Automated
 
-- [ ] 3.1 `npm run lint` passes
-- [ ] 3.2 `npm run typecheck` passes
-- [ ] 3.3 Typed routes still resolve after the group move
+- [x] 3.1 `npm run lint` passes
+- [x] 3.2 `npm run typecheck` passes
+- [x] 3.3 Typed routes still resolve after the group move
 
 #### Manual
 
-- [ ] 3.4 Cold start signed-out lands on auth; tabs inaccessible
-- [ ] 3.5 Sign-up lands in `(app)` after membership appears
-- [ ] 3.6 Sign-out returns to auth; protected routes inaccessible
+- [x] 3.4 Cold start signed-out lands on auth; tabs inaccessible
+- [x] 3.5 Sign-up lands in `(app)` after membership appears
+- [x] 3.6 Sign-out returns to auth; protected routes inaccessible
 
 ### Phase 4: Household surface + invite join
 
