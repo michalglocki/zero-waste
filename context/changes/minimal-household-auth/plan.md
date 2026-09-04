@@ -380,37 +380,37 @@ Membership fetch is a single-row read; keep the post-auth retry short (low hundr
 
 #### Manual
 
-- [x] 2.4 Session persists across app reload after signup
-- [x] 2.5 Membership row is readable from the client after signup
+- [x] 2.4 Session persists across app reload after signup — 88a9808
+- [x] 2.5 Membership row is readable from the client after signup — 88a9808
 
 ### Phase 3: Route gate + auth UI
 
 #### Automated
 
-- [x] 3.1 `npm run lint` passes
-- [x] 3.2 `npm run typecheck` passes
-- [x] 3.3 Typed routes still resolve after the group move
+- [x] 3.1 `npm run lint` passes — 88a9808
+- [x] 3.2 `npm run typecheck` passes — 88a9808
+- [x] 3.3 Typed routes still resolve after the group move — 88a9808
 
 #### Manual
 
-- [x] 3.4 Cold start signed-out lands on auth; tabs inaccessible
-- [x] 3.5 Sign-up lands in `(app)` after membership appears
-- [x] 3.6 Sign-out returns to auth; protected routes inaccessible
+- [x] 3.4 Cold start signed-out lands on auth; tabs inaccessible — 88a9808
+- [x] 3.5 Sign-up lands in `(app)` after membership appears — 88a9808
+- [x] 3.6 Sign-out returns to auth; protected routes inaccessible — 88a9808
 
 ### Phase 4: Household surface + invite join
 
 #### Automated
 
-- [ ] 4.1 `npm run lint` passes
-- [ ] 4.2 `npm run typecheck` passes
+- [x] 4.1 `npm run lint` passes
+- [x] 4.2 `npm run typecheck` passes
 
 #### Manual
 
-- [ ] 4.3 User A sees an invite code after signup
-- [ ] 4.4 User B joins A’s code and shows A’s household id/code
-- [ ] 4.5 B’s original solo household is deleted when empty
-- [ ] 4.6 Re-joining the same code is a no-op success
-- [ ] 4.7 Invalid code shows an error and does not change membership
+- [x] 4.3 User A sees an invite code after signup
+- [x] 4.4 User B joins A’s code and shows A’s household id/code
+- [x] 4.5 B’s original solo household is deleted when empty
+- [x] 4.6 Re-joining the same code is a no-op success
+- [x] 4.7 Invalid code shows an error and does not change membership
 
 ### Phase 5: Verification script + typecheck wiring
 

@@ -103,7 +103,10 @@ export function HouseholdProvider({ children }: { children: ReactNode }) {
       await refreshMembership();
       return { error: null };
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Failed to join household';
+      const message =
+        err && typeof err === 'object' && 'message' in err && typeof err.message === 'string'
+          ? err.message
+          : 'Failed to join household';
       return { error: new Error(message) };
     }
   }

@@ -16,3 +16,7 @@ Roadmap F-01. Decisions from `/10x-plan`: email/password (confirm email off for 
 **Env:** copy `.env.example` → `.env.local` and set `EXPO_PUBLIC_SUPABASE_URL` + `EXPO_PUBLIC_SUPABASE_ANON_KEY` only (never the service role). Client also accepts `EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY` as a fallback.
 
 **Phase 2 note:** web auth storage uses browser `localStorage` (`.web.ts`); native uses `expo-sqlite/localStorage/install` so Expo Router static SSR does not pull WASM.
+
+**Phase 3:** `(auth)` / `(app)` / `bootstrap-household` via `Stack.Protected`; SplashScreen hydrate gate; home has Sign out for verification (household invite UI is Phase 4).
+
+**Phase 4:** Household home shows invite code + join form; web `(app)` uses Stack (`_layout.web.tsx`) because headless Tabs hrefs resolved to +not-found after the Protected group move.

@@ -1,77 +1,105 @@
-import * as Device from 'expo-device';
-import { Platform, Pressable, StyleSheet } from 'react-native';
+import { useEffect, useState } from 'react';
+import { Pressable, ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { AnimatedIcon } from '@/components/animated-icon';
-import { HintRow } from '@/components/hint-row';
+import { InviteCodeCard } from '@/components/household/invite-code-card';
+import { JoinHouseholdForm } from '@/components/household/join-household-form';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { WebBadge } from '@/components/web-badge';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
 import { useAuth } from '@/hooks/use-auth';
+import { useHousehold } from '@/hooks/use-household';
 import { useTheme } from '@/hooks/use-theme';
+import { getInviteCode } from '@/services/household';
 
-function getDevMenuHint() {
-  if (Platform.OS === 'web') {
-    return <ThemedText type="small">use browser devtools</ThemedText>;
-  }
-  if (Device.isDevice) {
-    return (
-      <ThemedText type="small">
-        shake device or press <ThemedText type="code">m</ThemedText> in terminal
-      </ThemedText>
-    );
-  }
-  const shortcut = Platform.OS === 'android' ? 'cmd+m (or ctrl+m)' : 'cmd+d';
-  return (
-    <ThemedText type="small">
-      press <ThemedText type="code">{shortcut}</ThemedText>
-    </ThemedText>
-  );
-}
-
-export default function HomeScreen() {
-  const { signOut } = useAuth();
+export default function HouseholdHomeScreen() {
   const theme = useTheme();
+  const { signOut } = useAuth();
+  const { membership } = useHousehold();
+  const [inviteCode, setInviteCode] = useState<string | null>(null);
+  const [loadingCode, setLoadingCode] = useState(true);
+  const [codeError, setCodeError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const householdId = membership?.household_id;
+    let cancelled = false;
+
+    void (async () => {
+      if (!householdId) {
+        if (!cancelled) {
+          setInviteCode(null);
+          setCodeError(null);
+          setLoadingCode(false);
+        }
+        return;
+      }
+
+      if (!cancelled) {
+        setLoadingCode(true);
+        setCodeError(null);
+      }
+
+      try {
+        const code = await getInviteCode(householdId);
+        if (!cancelled) {
+          setInviteCode(code);
+          if (!code) {
+            setCodeError('Could not load invite code.');
+          }
+        }
+      } catch (err) {
+        if (!cancelled) {
+          setInviteCode(null);
+          setCodeError(err instanceof Error ? err.message : 'Could not load invite code.');
+        }
+      } finally {
+        if (!cancelled) {
+          setLoadingCode(false);
+        }
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [membership?.household_id]);
 
   return (
     <ThemedView style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.heroSection}>
-          <AnimatedIcon />
-          <ThemedText type="title" style={styles.title}>
-            Welcome to&nbsp;Expo
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          keyboardShouldPersistTaps="handled">
+          <ThemedText type="subtitle">Household</ThemedText>
+          <ThemedText type="small" themeColor="textSecondary">
+            {"You're in a shared household. Share the invite code below, or join another household with theirs."}
           </ThemedText>
-        </ThemedView>
 
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
-
-        <ThemedView type="backgroundElement" style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/(app)/index.tsx</ThemedText>}
+          <InviteCodeCard
+            inviteCode={inviteCode}
+            householdId={membership?.household_id ?? null}
+            loading={loadingCode}
           />
-          <HintRow title="Dev tools" hint={getDevMenuHint()} />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
-          />
-        </ThemedView>
 
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel="Sign out"
-          onPress={() => void signOut()}
-          style={({ pressed }) => [
-            styles.signOut,
-            { backgroundColor: theme.backgroundElement, opacity: pressed ? 0.7 : 1 },
-          ]}>
-          <ThemedText type="smallBold">Sign out</ThemedText>
-        </Pressable>
+          {codeError ? (
+            <ThemedText type="small" themeColor="textSecondary">
+              {codeError}
+            </ThemedText>
+          ) : null}
 
-        {Platform.OS === 'web' && <WebBadge />}
+          <JoinHouseholdForm />
+
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Sign out"
+            onPress={() => void signOut()}
+            style={({ pressed }) => [
+              styles.signOut,
+              { backgroundColor: theme.backgroundElement, opacity: pressed ? 0.7 : 1 },
+            ]}>
+            <ThemedText type="smallBold">Sign out</ThemedText>
+          </Pressable>
+        </ScrollView>
       </SafeAreaView>
     </ThemedView>
   );
@@ -80,36 +108,19 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
     flexDirection: 'row',
+    justifyContent: 'center',
   },
   safeArea: {
     flex: 1,
-    paddingHorizontal: Spacing.four,
-    alignItems: 'center',
-    gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
     maxWidth: MaxContentWidth,
   },
-  heroSection: {
-    alignItems: 'center',
+  scrollContent: {
+    flexGrow: 1,
     justifyContent: 'center',
-    flex: 1,
     paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
-  },
-  title: {
-    textAlign: 'center',
-  },
-  code: {
-    textTransform: 'uppercase',
-  },
-  stepContainer: {
+    paddingBottom: BottomTabInset + Spacing.three,
     gap: Spacing.three,
-    alignSelf: 'stretch',
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
   },
   signOut: {
     alignSelf: 'stretch',
@@ -118,5 +129,6 @@ const styles = StyleSheet.create({
     minHeight: 44,
     borderRadius: Spacing.two,
     paddingVertical: Spacing.two,
+    marginTop: Spacing.two,
   },
 });
