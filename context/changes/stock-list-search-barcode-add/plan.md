@@ -311,14 +311,14 @@ MVP household lists are small; client-side or simple `ILIKE 'prefix%'` query is 
 
 #### Automated
 
-- [ ] 1.1 Migration file exists under `supabase/migrations/` with `stock_items`, unique `(household_id, barcode)`, nullable identity columns, and RLS using F-01 helpers
-- [ ] 1.2 `npm run typecheck` passes with new types/service compiling
-- [ ] 1.3 `npm run lint` passes
+- [x] 1.1 Migration file exists under `supabase/migrations/` with `stock_items`, unique `(household_id, barcode)`, nullable identity columns, and RLS using F-01 helpers
+- [x] 1.2 `npm run typecheck` passes with new types/service compiling
+- [x] 1.3 `npm run lint` passes
 
 #### Manual
 
-- [ ] 1.4 Migration applied to the project Supabase instance used by `.env.local`
-- [ ] 1.5 From SQL or a throwaway call: insert/increment same barcode twice yields one row with summed quantity; second household cannot read/write the first’s rows
+- [x] 1.4 Migration applied to the project Supabase instance used by `.env.local`
+- [x] 1.5 From SQL or a throwaway call: insert/increment same barcode twice yields one row with summed quantity; second household cannot read/write the first’s rows
 
 ### Phase 2: Stock home + search + navigation
 

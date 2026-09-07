@@ -1,9 +1,9 @@
 ---
 change_id: stock-list-search-barcode-add
 title: View, search, and barcode-add household stock
-status: plan_reviewed
+status: implementing
 created: 2026-09-04
-updated: 2026-09-04
+updated: 2026-09-07
 archived_at: null
 ---
 
