@@ -6,6 +6,15 @@ export type StockItem = {
   name: string | null;
   main_category: string | null;
   auxiliary_category: string | null;
+  pack_size: string | null;
   created_at: string;
   updated_at: string;
+};
+
+/** Optional identity fields for diff-only enrich updates (qty never included). */
+export type StockItemIdentityFields = {
+  name?: string | null;
+  main_category?: string | null;
+  auxiliary_category?: string | null;
+  pack_size?: string | null;
 };

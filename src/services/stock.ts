@@ -1,8 +1,15 @@
 import { supabase } from '@/lib/supabase';
-import type { StockItem } from '@/types/stock';
+import type { StockItem, StockItemIdentityFields } from '@/types/stock';
 
 const STOCK_SELECT =
-  'id, household_id, barcode, quantity, name, main_category, auxiliary_category, created_at, updated_at';
+  'id, household_id, barcode, quantity, name, main_category, auxiliary_category, pack_size, created_at, updated_at';
+
+const IDENTITY_KEYS = [
+  'name',
+  'main_category',
+  'auxiliary_category',
+  'pack_size',
+] as const satisfies readonly (keyof StockItemIdentityFields)[];
 
 /** Lists current household stock, newest-updated first. */
 export async function listStockItems(): Promise<StockItem[]> {
@@ -64,6 +71,61 @@ export async function addStockByBarcode(
     p_barcode: trimmed,
     p_delta: delta,
   });
+
+  if (error) {
+    throw error;
+  }
+
+  return data as StockItem;
+}
+
+/**
+ * Diff-only identity enrich for a household stock row.
+ * Updates only identity/pack keys present in `fields` whose value differs from
+ * the current row. Never modifies `quantity`. Never nulls out a non-null column
+ * solely because the incoming map omitted or cleared that field.
+ */
+export async function updateStockItemIdentity(
+  barcode: string,
+  fields: StockItemIdentityFields
+): Promise<StockItem> {
+  const trimmed = barcode.trim();
+  if (trimmed === '') {
+    throw new Error('barcode required');
+  }
+
+  const current = await getStockItemByBarcode(trimmed);
+  if (current === null) {
+    throw new Error('stock item not found');
+  }
+
+  const patch: StockItemIdentityFields = {};
+  for (const key of IDENTITY_KEYS) {
+    if (!Object.prototype.hasOwnProperty.call(fields, key)) {
+      continue;
+    }
+    const next = fields[key] ?? null;
+    const prev = current[key];
+    if (next === prev) {
+      continue;
+    }
+    // Do not wipe a filled DB value when OFF omitted / returned empty.
+    if (next === null && prev !== null) {
+      continue;
+    }
+    patch[key] = next;
+  }
+
+  if (Object.keys(patch).length === 0) {
+    return current;
+  }
+
+  const { data, error } = await supabase
+    .from('stock_items')
+    .update(patch)
+    .eq('barcode', trimmed)
+    .select(STOCK_SELECT)
+    .single();
 
   if (error) {
     throw error;

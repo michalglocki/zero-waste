@@ -43,7 +43,7 @@ Household members forget what they already have when they shop or plan a list, s
 | ----- | ---------------------- | --------------------------------- | ---------------- | -------------- | -------- |
 | F-01 | minimal-household-auth | (foundation) a signed-in user is tied to one household so stock can be shared | — | Access Control | in-progress |
 | S-01 | stock-list-search-barcode-add | view household stock, search it, and add a product by scanning its barcode | F-01 | US-01, FR-001, FR-002, FR-003, FR-007, FR-008 | in-progress |
-| S-02 | barcode-open-food-facts-identify | after a scan, store the barcode and fill known name/category fields from Open Food Facts when present | S-01 | US-02, FR-006, FR-007, FR-008 | blocked |
+| S-02 | barcode-open-food-facts-identify | after a scan, store the barcode and fill known name/category fields from Open Food Facts when present | S-01 | US-02, FR-006, FR-007, FR-008 | in-progress |
 | S-03 | remove-stock-item | decrease stock by 1; store the remove; drop the row when quantity hits 0 | S-01 | US-01, FR-004, FR-009 | proposed |
 | S-04 | manual-add-without-barcode | add a product by hand (barcode number + quantity; no unit) | S-01 | FR-005, FR-007, FR-008 | proposed |
 | S-05 | likely-empty-recommendations | open a recommendations list of quantity-1 products overdue vs their average removal interval | S-03 | US-03, FR-010, FR-011 | proposed |
@@ -102,11 +102,11 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Parallel with:** S-03, S-04, S-05
 - **Blockers:** —
 - **Unknowns:**
-  - Exactly which Open Food Facts attributes map to name, main category, and auxiliary category (and closed enum values) — Owner: product + eng. Block: yes.
+  - Exactly which Open Food Facts attributes map to name, main category, and auxiliary category (and closed enum values) — Owner: product + eng. Block: yes. *(Settled in `/10x-plan barcode-open-food-facts-identify`: free-text categories; auxiliary only on clear audience signal; see change plan Definitions.)*
   - Whether a second catalog for non-food (e.g. cosmetics) is in MVP, or empty-fields fallback is enough — Owner: product. Block: no.
-  - Call Open Food Facts from the app or via the Worker — Owner: eng. Block: no.
-- **Risk:** Sequenced after a working scan-and-save so enrichment cannot block the aisle add. Planning is blocked on field mapping (PRD Open Question 6). Lookup path defaults to “no extra BFF unless needed”; do not grow the hello-world Worker here unless that question is answered the other way.
-- **Status:** blocked
+  - Call Open Food Facts from the app or via the Worker — Owner: eng. Block: no. *(Settled: Expo client → OFF directly.)*
+- **Risk:** Sequenced after a working scan-and-save so enrichment cannot block the aisle add. Field mapping for MVP is decided in the S-02 plan; do not grow the hello-world Worker for this slice.
+- **Status:** in-progress
 
 ### S-03: Decrement stock (drop row at zero)
 
