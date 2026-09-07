@@ -5,7 +5,7 @@ import { ThemedText } from '@/components/themed-text';
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 
-function WebHeaderNav({ active }: { active: 'stock' | 'household' }) {
+function WebHeaderNav({ active }: { active: 'stock' | 'consume' | 'household' }) {
   const theme = useTheme();
 
   return (
@@ -23,6 +23,21 @@ function WebHeaderNav({ active }: { active: 'stock' | 'household' }) {
             },
           ]}>
           <ThemedText type="smallBold">Stock</ThemedText>
+        </Pressable>
+      </Link>
+      <Link href="/(app)/(tabs)/consume" asChild>
+        <Pressable
+          accessibilityRole="link"
+          accessibilityState={{ selected: active === 'consume' }}
+          style={({ pressed }) => [
+            styles.navItem,
+            {
+              backgroundColor:
+                active === 'consume' ? theme.backgroundSelected : theme.backgroundElement,
+              opacity: pressed ? 0.7 : 1,
+            },
+          ]}>
+          <ThemedText type="smallBold">Consume</ThemedText>
         </Pressable>
       </Link>
       <Link href="/(app)/(tabs)/household" asChild>
@@ -45,7 +60,7 @@ function WebHeaderNav({ active }: { active: 'stock' | 'household' }) {
 }
 
 /**
- * Web: Stock ↔ Household in the header (no native tab bar).
+ * Web: Stock ↔ Consume ↔ Household in the header (no native tab bar).
  * Scan/join are sibling Stack screens on the parent `(app)` layout.
  */
 export default function TabsLayout() {
@@ -62,6 +77,14 @@ export default function TabsLayout() {
           title: 'Stock',
           headerTitle: 'Zero waste',
           headerRight: () => <WebHeaderNav active="stock" />,
+        }}
+      />
+      <Stack.Screen
+        name="consume"
+        options={{
+          title: 'Consume',
+          headerTitle: 'Zero waste',
+          headerRight: () => <WebHeaderNav active="consume" />,
         }}
       />
       <Stack.Screen

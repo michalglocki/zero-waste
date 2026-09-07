@@ -20,6 +20,14 @@ export default function AppTabs() {
         />
       </NativeTabs.Trigger>
 
+      <NativeTabs.Trigger name="consume">
+        <NativeTabs.Trigger.Label>Consume</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Icon
+          sf={{ default: 'fork.knife', selected: 'fork.knife' }}
+          md="restaurant"
+        />
+      </NativeTabs.Trigger>
+
       <NativeTabs.Trigger name="household">
         <NativeTabs.Trigger.Label>Household</NativeTabs.Trigger.Label>
         <NativeTabs.Trigger.Icon

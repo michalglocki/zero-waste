@@ -281,29 +281,29 @@ Single-row RPC per tap; list is already household-scoped and refetch-on-focus. E
 
 #### Automated
 
-- [x] 2.1 `npm run typecheck` passes with the new export compiling
-- [x] 2.2 `npm run lint` passes
+- [x] 2.1 `npm run typecheck` passes with the new export compiling — ccb8a5c
+- [x] 2.2 `npm run lint` passes — ccb8a5c
 
 #### Manual
 
-- [x] 2.3 Throwaway call or temporary screen hook: remove on qty≥2 returns updated item; remove on qty 1 returns deleted; repeat remove on same barcode after delete surfaces not-in-stock / not-found with no new event
+- [x] 2.3 Throwaway call or temporary screen hook: remove on qty≥2 returns updated item; remove on qty 1 returns deleted; repeat remove on same barcode after delete surfaces not-in-stock / not-found with no new event — ccb8a5c
 
 ### Phase 3: Consume tab, list −, last-unit confirm, Not in stock
 
 #### Automated
 
-- [ ] 3.1 `npm run typecheck` passes
-- [ ] 3.2 `npm run lint` passes
-- [ ] 3.3 `manual-verification.md` exists in this change folder
-- [ ] 3.4 Consume route and tab triggers exist on native and web entry points
+- [x] 3.1 `npm run typecheck` passes
+- [x] 3.2 `npm run lint` passes
+- [x] 3.3 `manual-verification.md` exists in this change folder
+- [x] 3.4 Consume route and tab triggers exist on native and web entry points
 
 #### Manual
 
-- [ ] 3.5 Tabs show Stock | Consume | Household; Stock rows have no `−`; Consume rows do
-- [ ] 3.6 Empty Consume shows “Nothing to consume” (or equivalent) with no Scan CTA; Stock empty still offers Scan
-- [ ] 3.7 Qty 3 on Consume → tap − → qty 2; no confirm dialog
-- [ ] 3.8 Qty 1 → Cancel confirm → row remains; Confirm → row gone from Consume (and Stock on next focus)
-- [ ] 3.9 After another member/device deleted the row (or forced missing RPC): UI shows Not in stock; no new utilization event; list refetches
-- [ ] 3.10 After delete, event exists for that barcode; re-add via Stock Scan creates a new stock row
-- [ ] 3.11 Double-tap − does not double-apply while busy
-- [ ] 3.12 Forced network failure shows error + Retry; qty unchanged until success
+- [x] 3.5 Tabs show Stock | Consume | Household; Stock rows have no `−`; Consume rows do
+- [x] 3.6 Empty Consume shows “Nothing to consume” (or equivalent) with no Scan CTA; Stock empty still offers Scan
+- [x] 3.7 Qty 3 on Consume → tap − → qty 2; no confirm dialog
+- [x] 3.8 Qty 1 → Cancel confirm → row remains; Confirm → row gone from Consume (and Stock on next focus)
+- [x] 3.9 After another member/device deleted the row (or forced missing RPC): UI shows Not in stock; no new utilization event; list refetches
+- [x] 3.10 After delete, event exists for that barcode; re-add via Stock Scan creates a new stock row
+- [x] 3.11 Double-tap − does not double-apply while busy
+- [x] 3.12 Forced network failure shows error + Retry; qty unchanged until success
