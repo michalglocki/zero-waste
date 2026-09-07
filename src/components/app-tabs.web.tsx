@@ -22,10 +22,10 @@ export default function AppTabs() {
       <TabList asChild>
         <CustomTabList>
           <TabTrigger name="home" href="/(app)" asChild>
-            <TabButton>Household</TabButton>
+            <TabButton>Stock</TabButton>
           </TabTrigger>
-          <TabTrigger name="explore" href="/(app)/explore" asChild>
-            <TabButton>Explore</TabButton>
+          <TabTrigger name="household" href="/(app)/household" asChild>
+            <TabButton>Household</TabButton>
           </TabTrigger>
         </CustomTabList>
       </TabList>
@@ -55,7 +55,7 @@ export function CustomTabList(props: TabListProps) {
     <View {...props} style={styles.tabListContainer}>
       <ThemedView type="backgroundElement" style={styles.innerContainer}>
         <ThemedText type="smallBold" style={styles.brandText}>
-          Expo Starter
+          Zero waste
         </ThemedText>
 
         {props.children}

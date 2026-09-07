@@ -311,31 +311,31 @@ MVP household lists are small; client-side or simple `ILIKE 'prefix%'` query is 
 
 #### Automated
 
-- [x] 1.1 Migration file exists under `supabase/migrations/` with `stock_items`, unique `(household_id, barcode)`, nullable identity columns, and RLS using F-01 helpers
-- [x] 1.2 `npm run typecheck` passes with new types/service compiling
-- [x] 1.3 `npm run lint` passes
+- [x] 1.1 Migration file exists under `supabase/migrations/` with `stock_items`, unique `(household_id, barcode)`, nullable identity columns, and RLS using F-01 helpers — 4da6821
+- [x] 1.2 `npm run typecheck` passes with new types/service compiling — 4da6821
+- [x] 1.3 `npm run lint` passes — 4da6821
 
 #### Manual
 
-- [x] 1.4 Migration applied to the project Supabase instance used by `.env.local`
-- [x] 1.5 From SQL or a throwaway call: insert/increment same barcode twice yields one row with summed quantity; second household cannot read/write the first’s rows
+- [x] 1.4 Migration applied to the project Supabase instance used by `.env.local` — 4da6821
+- [x] 1.5 From SQL or a throwaway call: insert/increment same barcode twice yields one row with summed quantity; second household cannot read/write the first’s rows — 4da6821
 
 ### Phase 2: Stock home + search + navigation
 
 #### Automated
 
-- [ ] 2.1 `npm run typecheck` passes
-- [ ] 2.2 `npm run lint` passes
+- [x] 2.1 `npm run typecheck` passes
+- [x] 2.2 `npm run lint` passes
 
 #### Manual
 
-- [ ] 2.3 Signed-in user lands on stock list (empty state if no rows)
-- [ ] 2.4 Prefix search returns matching barcodes and shows empty results when none match
-- [ ] 2.5 Household tab still shows invite code, join, and sign-out
-- [ ] 2.6 Explore tutorial route is deleted or unreachable (not only unlabeled)
-- [ ] 2.7 Returning to stock after leaving the screen triggers a list refetch (focus), not only initial mount
-- [ ] 2.8 List order is newest-updated first (`updated_at` desc)
-- [ ] 2.9 Web tab chrome no longer shows “Expo Starter” branding (rename or remove)
+- [x] 2.3 Signed-in user lands on stock list (empty state if no rows)
+- [x] 2.4 Prefix search returns matching barcodes and shows empty results when none match
+- [x] 2.5 Household tab still shows invite code, join, and sign-out
+- [x] 2.6 Explore tutorial route is deleted or unreachable (not only unlabeled)
+- [x] 2.7 Returning to stock after leaving the screen triggers a list refetch (focus), not only initial mount
+- [x] 2.8 List order is newest-updated first (`updated_at` desc)
+- [x] 2.9 Web tab chrome no longer shows “Expo Starter” branding (rename or remove)
 
 ### Phase 3: Scan → confirm → upsert
 

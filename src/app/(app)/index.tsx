@@ -1,105 +1,103 @@
-import { useEffect, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet } from 'react-native';
+import { useCallback, useState } from 'react';
+import {
+  ActivityIndicator,
+  FlatList,
+  StyleSheet,
+  View,
+} from 'react-native';
+import { useFocusEffect } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { InviteCodeCard } from '@/components/household/invite-code-card';
-import { JoinHouseholdForm } from '@/components/household/join-household-form';
+import { StockEmptyState } from '@/components/stock/stock-empty-state';
+import { StockListRow } from '@/components/stock/stock-list-row';
+import { StockSearchField } from '@/components/stock/stock-search-field';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
-import { useAuth } from '@/hooks/use-auth';
-import { useHousehold } from '@/hooks/use-household';
 import { useTheme } from '@/hooks/use-theme';
-import { getInviteCode } from '@/services/household';
+import { listStockItems } from '@/services/stock';
+import type { StockItem } from '@/types/stock';
 
-export default function HouseholdHomeScreen() {
+export default function StockHomeScreen() {
   const theme = useTheme();
-  const { signOut } = useAuth();
-  const { membership } = useHousehold();
-  const [inviteCode, setInviteCode] = useState<string | null>(null);
-  const [loadingCode, setLoadingCode] = useState(true);
-  const [codeError, setCodeError] = useState<string | null>(null);
+  const [items, setItems] = useState<StockItem[]>([]);
+  const [query, setQuery] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const householdId = membership?.household_id;
-    let cancelled = false;
+  useFocusEffect(
+    useCallback(() => {
+      let cancelled = false;
 
-    void (async () => {
-      if (!householdId) {
+      void (async () => {
         if (!cancelled) {
-          setInviteCode(null);
-          setCodeError(null);
-          setLoadingCode(false);
+          setLoading(true);
+          setError(null);
         }
-        return;
-      }
 
-      if (!cancelled) {
-        setLoadingCode(true);
-        setCodeError(null);
-      }
-
-      try {
-        const code = await getInviteCode(householdId);
-        if (!cancelled) {
-          setInviteCode(code);
-          if (!code) {
-            setCodeError('Could not load invite code.');
+        try {
+          const rows = await listStockItems();
+          if (!cancelled) {
+            setItems(rows);
+          }
+        } catch (err) {
+          if (!cancelled) {
+            setItems([]);
+            setError(err instanceof Error ? err.message : 'Could not load stock.');
+          }
+        } finally {
+          if (!cancelled) {
+            setLoading(false);
           }
         }
-      } catch (err) {
-        if (!cancelled) {
-          setInviteCode(null);
-          setCodeError(err instanceof Error ? err.message : 'Could not load invite code.');
-        }
-      } finally {
-        if (!cancelled) {
-          setLoadingCode(false);
-        }
-      }
-    })();
+      })();
 
-    return () => {
-      cancelled = true;
-    };
-  }, [membership?.household_id]);
+      return () => {
+        cancelled = true;
+      };
+    }, [])
+  );
+
+  const prefix = query.trim().toLowerCase();
+  const filtered =
+    prefix === ''
+      ? items
+      : items.filter((item) => item.barcode.toLowerCase().startsWith(prefix));
+
+  const showSearchEmpty = query.trim() !== '' && filtered.length === 0 && !loading;
+  const showNoStock = query.trim() === '' && items.length === 0 && !loading && !error;
 
   return (
     <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ScrollView
-          contentContainerStyle={styles.scrollContent}
-          keyboardShouldPersistTaps="handled">
-          <ThemedText type="subtitle">Household</ThemedText>
+      <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
+        <ThemedText type="subtitle">Stock</ThemedText>
+
+        <StockSearchField value={query} onChangeText={setQuery} />
+
+        {error ? (
           <ThemedText type="small" themeColor="textSecondary">
-            {"You're in a shared household. Share the invite code below, or join another household with theirs."}
+            {error}
           </ThemedText>
+        ) : null}
 
-          <InviteCodeCard
-            inviteCode={inviteCode}
-            householdId={membership?.household_id ?? null}
-            loading={loadingCode}
+        {loading ? (
+          <ActivityIndicator color={theme.text} style={styles.loader} />
+        ) : showNoStock ? (
+          <StockEmptyState kind="no-stock" />
+        ) : showSearchEmpty ? (
+          <StockEmptyState kind="no-results" />
+        ) : (
+          <FlatList
+            data={filtered}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => <StockListRow item={item} />}
+            contentContainerStyle={styles.listContent}
+            ItemSeparatorComponent={() => (
+              <View style={[styles.separator, { backgroundColor: theme.backgroundSelected }]} />
+            )}
+            keyboardShouldPersistTaps="handled"
           />
-
-          {codeError ? (
-            <ThemedText type="small" themeColor="textSecondary">
-              {codeError}
-            </ThemedText>
-          ) : null}
-
-          <JoinHouseholdForm />
-
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel="Sign out"
-            onPress={() => void signOut()}
-            style={({ pressed }) => [
-              styles.signOut,
-              { backgroundColor: theme.backgroundElement, opacity: pressed ? 0.7 : 1 },
-            ]}>
-            <ThemedText type="smallBold">Sign out</ThemedText>
-          </Pressable>
-        </ScrollView>
+        )}
       </SafeAreaView>
     </ThemedView>
   );
@@ -114,21 +112,17 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     maxWidth: MaxContentWidth,
-  },
-  scrollContent: {
-    flexGrow: 1,
-    justifyContent: 'center',
     paddingHorizontal: Spacing.four,
-    paddingBottom: BottomTabInset + Spacing.three,
     gap: Spacing.three,
   },
-  signOut: {
-    alignSelf: 'stretch',
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: 44,
-    borderRadius: Spacing.two,
-    paddingVertical: Spacing.two,
-    marginTop: Spacing.two,
+  loader: {
+    marginTop: Spacing.four,
+  },
+  listContent: {
+    flexGrow: 1,
+    paddingBottom: BottomTabInset + Spacing.three,
+  },
+  separator: {
+    height: StyleSheet.hairlineWidth,
   },
 });
