@@ -292,18 +292,18 @@ Single-row RPC per tap; list is already household-scoped and refetch-on-focus. E
 
 #### Automated
 
-- [x] 3.1 `npm run typecheck` passes
-- [x] 3.2 `npm run lint` passes
-- [x] 3.3 `manual-verification.md` exists in this change folder
-- [x] 3.4 Consume route and tab triggers exist on native and web entry points
+- [x] 3.1 `npm run typecheck` passes — ca8782b
+- [x] 3.2 `npm run lint` passes — ca8782b
+- [x] 3.3 `manual-verification.md` exists in this change folder — ca8782b
+- [x] 3.4 Consume route and tab triggers exist on native and web entry points — ca8782b
 
 #### Manual
 
-- [x] 3.5 Tabs show Stock | Consume | Household; Stock rows have no `−`; Consume rows do
-- [x] 3.6 Empty Consume shows “Nothing to consume” (or equivalent) with no Scan CTA; Stock empty still offers Scan
-- [x] 3.7 Qty 3 on Consume → tap − → qty 2; no confirm dialog
-- [x] 3.8 Qty 1 → Cancel confirm → row remains; Confirm → row gone from Consume (and Stock on next focus)
-- [x] 3.9 After another member/device deleted the row (or forced missing RPC): UI shows Not in stock; no new utilization event; list refetches
-- [x] 3.10 After delete, event exists for that barcode; re-add via Stock Scan creates a new stock row
-- [x] 3.11 Double-tap − does not double-apply while busy
-- [x] 3.12 Forced network failure shows error + Retry; qty unchanged until success
+- [x] 3.5 Tabs show Stock | Consume | Household; Stock rows have no `−`; Consume rows do — ca8782b
+- [x] 3.6 Empty Consume shows “Nothing to consume” (or equivalent) with no Scan CTA; Stock empty still offers Scan — ca8782b
+- [x] 3.7 Qty 3 on Consume → tap − → qty 2; no confirm dialog — ca8782b
+- [x] 3.8 Qty 1 → Cancel confirm → row remains; Confirm → row gone from Consume (and Stock on next focus) — ca8782b
+- [x] 3.9 After another member/device deleted the row (or forced missing RPC): UI shows Not in stock; no new utilization event; list refetches — ca8782b
+- [x] 3.10 After delete, event exists for that barcode; re-add via Stock Scan creates a new stock row — ca8782b
+- [x] 3.11 Double-tap − does not double-apply while busy — ca8782b
+- [x] 3.12 Forced network failure shows error + Retry; qty unchanged until success — ca8782b
