@@ -354,36 +354,36 @@ Surface enriched identity on the stock list and record an end-to-end checklist.
 
 #### Automated
 
-- [x] 2.1 `src/services/open-food-facts.ts` exists and exports a barcode lookup used by the app
-- [x] 2.2 Mapper covers name fallbacks, always-null `auxiliary_category`, and nulls for miss/omit cases
-- [x] 2.3 Cache helpers enforce 30-minute TTL (expired entry treated as miss)
-- [x] 2.4 `npm run typecheck` passes
-- [x] 2.5 `npm run lint` passes
+- [x] 2.1 `src/services/open-food-facts.ts` exists and exports a barcode lookup used by the app — c080b81
+- [x] 2.2 Mapper covers name fallbacks, always-null `auxiliary_category`, and nulls for miss/omit cases — c080b81
+- [x] 2.3 Cache helpers enforce 30-minute TTL (expired entry treated as miss) — c080b81
+- [x] 2.4 `npm run typecheck` passes — c080b81
+- [x] 2.5 `npm run lint` passes — c080b81
 
 #### Manual
 
-- [x] 2.6 Against live OFF: a known in-catalog barcode returns non-null `name` when OFF has `product_name`
-- [x] 2.7 Against a nonsense barcode: outcome is “not found”
-- [x] 2.8 Network failure path is distinguishable from not-found for soft status copy
-- [x] 2.9 Second lookup of the same barcode within TTL does not require a new network round-trip
+- [x] 2.6 Against live OFF: a known in-catalog barcode returns non-null `name` when OFF has `product_name` — c080b81
+- [x] 2.7 Against a nonsense barcode: outcome is “not found” — c080b81
+- [x] 2.8 Network failure path is distinguishable from not-found for soft status copy — c080b81
+- [x] 2.9 Second lookup of the same barcode within TTL does not require a new network round-trip — c080b81
 
 ### Phase 3: Confirm sheet soft enrich + persist
 
 #### Automated
 
-- [ ] 3.1 Confirm sheet starts lookup on barcode mount (cache then OFF) and does not await OFF inside the Confirm handler before qty write
-- [ ] 3.2 `npm run typecheck` passes
-- [ ] 3.3 `npm run lint` passes
+- [x] 3.1 Confirm sheet starts lookup on barcode mount (cache then OFF) and does not await OFF inside the Confirm handler before qty write
+- [x] 3.2 `npm run typecheck` passes
+- [x] 3.3 `npm run lint` passes
 
 #### Manual
 
-- [ ] 3.4 Existing enriched row: sheet shows DB name immediately; Confirm +1 works; unchanged OFF data does not rewrite identical fields
-- [ ] 3.5 New barcode: Confirm during lookup succeeds; identity appears on list after focus refetch once OFF completes in background
-- [ ] 3.6 Nonsense barcode: “Not found”; Confirm still adds barcode-only row
-- [ ] 3.7 Offline / failed lookup: soft error + Retry; Confirm still works; existing DB identity unchanged
-- [ ] 3.8 Second scan of same barcode within 30 min: cache hit (no duplicate OFF request)
-- [ ] 3.9 Delta 0 Confirm: dismiss only; no qty change; no forced identity write
-- [ ] 3.10 Cancel without Confirm: no identity DB write for a new barcode
+- [x] 3.4 Existing enriched row: sheet shows DB name immediately; Confirm +1 works; unchanged OFF data does not rewrite identical fields
+- [x] 3.5 New barcode: Confirm during lookup succeeds; identity appears on list after focus refetch once OFF completes in background
+- [x] 3.6 Nonsense barcode: “Not found”; Confirm still adds barcode-only row
+- [x] 3.7 Offline / failed lookup: soft error + Retry; Confirm still works; existing DB identity unchanged
+- [x] 3.8 Second scan of same barcode within 30 min: cache hit (no duplicate OFF request)
+- [x] 3.9 Delta 0 Confirm: dismiss only; no qty change; no forced identity write
+- [x] 3.10 Cancel without Confirm: no identity DB write for a new barcode
 
 ### Phase 4: List display + manual verification
 

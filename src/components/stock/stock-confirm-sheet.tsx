@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Modal,
@@ -11,6 +11,18 @@ import {
 import { ThemedText } from '@/components/themed-text';
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
+import {
+  invalidateOffIdentityCache,
+  lookupOpenFoodFactsProduct,
+  type OffMappedIdentity,
+} from '@/services/open-food-facts';
+import {
+  beginEnrichSession,
+  flushEnrichIfReady,
+  identityFromStockRow,
+  markEnrichConfirmed,
+  setEnrichIdentity,
+} from '@/services/stock-identity-enrich';
 import { addStockByBarcode, getStockItemByBarcode } from '@/services/stock';
 
 type StockConfirmSheetProps = {
@@ -20,6 +32,8 @@ type StockConfirmSheetProps = {
   /** Called after a successful write (or delta-0 dismiss). */
   onSuccess: () => void;
 };
+
+type LookupStatus = 'idle' | 'looking' | 'found' | 'not_found' | 'error';
 
 /** Parse add-delta: integer ≥ 0; non-numeric / negative → 0. */
 export function parseAddDelta(raw: string): number {
@@ -33,10 +47,34 @@ export function parseAddDelta(raw: string): number {
   return Number.parseInt(trimmed, 10);
 }
 
+function secondaryLine(identity: OffMappedIdentity | null): string | null {
+  if (!identity) {
+    return null;
+  }
+  const parts = [identity.main_category, identity.pack_size].filter(
+    (part): part is string => part != null && part.length > 0
+  );
+  return parts.length > 0 ? parts.join(' · ') : null;
+}
+
+function lookupStatusCopy(status: LookupStatus): string | null {
+  switch (status) {
+    case 'looking':
+      return 'Looking up…';
+    case 'not_found':
+      return 'Not found';
+    case 'error':
+      return "Couldn't look up";
+    default:
+      return null;
+  }
+}
+
 /**
  * Confirm sheet: shows current household qty for a barcode and writes an add-delta.
  * Mount fresh per open (parent keys by barcode) so delta defaults to 1.
  * Delta 0 Confirm = dismiss with no write. Save errors stay on sheet with Retry.
+ * OFF enrich is soft / non-blocking; identity persists only after delta ≥ 1 Confirm.
  */
 export function StockConfirmSheet({
   barcode,
@@ -51,34 +89,119 @@ export function StockConfirmSheet({
   const [busy, setBusy] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
 
+  const [preview, setPreview] = useState<OffMappedIdentity | null>(null);
+  const [lookupStatus, setLookupStatus] = useState<LookupStatus>('idle');
+
+  const generationRef = useRef(0);
+  const mountedRef = useRef(true);
+  const hasOffIdentityRef = useRef(false);
+
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
+
   useEffect(() => {
     let cancelled = false;
+    const generation = beginEnrichSession(barcode);
+    generationRef.current = generation;
+    hasOffIdentityRef.current = false;
 
     void (async () => {
+      if (!cancelled && generation === generationRef.current) {
+        setLookupStatus('looking');
+      }
+
       try {
         const row = await getStockItemByBarcode(barcode);
-        if (!cancelled) {
-          setCurrentQty(row?.quantity ?? 0);
-          setQtyError(null);
+        if (cancelled || generation !== generationRef.current) {
+          return;
+        }
+        setCurrentQty(row?.quantity ?? 0);
+        setQtyError(null);
+        if (row) {
+          const fromDb = identityFromStockRow(row);
+          if (fromDb && !hasOffIdentityRef.current) {
+            setPreview(fromDb);
+          }
         }
       } catch (err) {
-        if (!cancelled) {
+        if (!cancelled && generation === generationRef.current) {
           setCurrentQty(0);
           setQtyError(err instanceof Error ? err.message : 'Could not load quantity.');
         }
       } finally {
-        if (!cancelled) {
+        if (!cancelled && generation === generationRef.current) {
           setLoadingQty(false);
         }
       }
+
+      if (cancelled) {
+        return;
+      }
+
+      await runLookup(generation, { bypassCache: false });
     })();
 
     return () => {
       cancelled = true;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- barcode-keyed mount session
   }, [barcode]);
 
+  async function runLookup(
+    generation: number,
+    options?: { bypassCache?: boolean }
+  ) {
+    if (options?.bypassCache) {
+      invalidateOffIdentityCache(barcode);
+    }
+
+    if (mountedRef.current && generation === generationRef.current) {
+      setLookupStatus('looking');
+    }
+
+    const result = await lookupOpenFoodFactsProduct(barcode, {
+      bypassCache: options?.bypassCache,
+    });
+
+    // Ignore stale lookups from a previous sheet generation.
+    if (generation !== generationRef.current) {
+      return;
+    }
+
+    if (result.outcome === 'found') {
+      hasOffIdentityRef.current = true;
+      setEnrichIdentity(barcode, generation, result.identity);
+      if (mountedRef.current) {
+        setPreview(result.identity);
+        setLookupStatus('found');
+      }
+      // May no-op unless Confirm already marked this generation.
+      await flushEnrichIfReady(barcode, generation);
+      return;
+    }
+
+    if (result.outcome === 'not_found') {
+      if (mountedRef.current) {
+        setLookupStatus('not_found');
+      }
+      return;
+    }
+
+    if (mountedRef.current) {
+      setLookupStatus('error');
+      console.warn('[stock-confirm] OFF lookup failed', result.error);
+    }
+  }
+
   const delta = parseAddDelta(deltaText);
+  const statusCopy = lookupStatusCopy(lookupStatus);
+  const meta = secondaryLine(preview);
+  const title = preview?.name ?? barcode;
+  const showBarcodeUnderTitle = preview?.name != null;
 
   function adjustDelta(step: number) {
     const next = Math.max(0, delta + step);
@@ -100,6 +223,10 @@ export function StockConfirmSheet({
     setBusy(true);
     try {
       await addStockByBarcode(barcode, delta);
+      const generation = generationRef.current;
+      markEnrichConfirmed(barcode, generation);
+      // Flush now if OFF already returned; otherwise late lookup will flush.
+      await flushEnrichIfReady(barcode, generation);
       onSuccess();
     } catch (err) {
       setSaveError(err instanceof Error ? err.message : 'Could not save. Try again.');
@@ -107,6 +234,10 @@ export function StockConfirmSheet({
       setBusy(false);
     }
   }
+
+  const confirmDisabled = busy || loadingQty || qtyError != null;
+  const showLookupRetry =
+    lookupStatus === 'error' || lookupStatus === 'not_found';
 
   return (
     <Modal
@@ -125,9 +256,42 @@ export function StockConfirmSheet({
             { backgroundColor: theme.background, borderColor: theme.backgroundSelected },
           ]}>
           <ThemedText type="smallBold">Add to stock</ThemedText>
-          <ThemedText type="default" style={styles.barcode}>
-            {barcode}
+          <ThemedText type="default" style={showBarcodeUnderTitle ? undefined : styles.barcode}>
+            {title}
           </ThemedText>
+          {showBarcodeUnderTitle ? (
+            <ThemedText type="small" themeColor="textSecondary" style={styles.barcode}>
+              {barcode}
+            </ThemedText>
+          ) : null}
+          {meta ? (
+            <ThemedText type="small" themeColor="textSecondary">
+              {meta}
+            </ThemedText>
+          ) : null}
+
+          {statusCopy ? (
+            <View style={styles.lookupRow}>
+              {lookupStatus === 'looking' ? (
+                <ActivityIndicator color={theme.textSecondary} />
+              ) : null}
+              <ThemedText type="small" themeColor="textSecondary">
+                {statusCopy}
+              </ThemedText>
+              {showLookupRetry ? (
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel="Retry product lookup"
+                  disabled={busy}
+                  onPress={() =>
+                    void runLookup(generationRef.current, { bypassCache: true })
+                  }
+                  style={({ pressed }) => [{ opacity: pressed || busy ? 0.6 : 1 }]}>
+                  <ThemedText type="link">Retry</ThemedText>
+                </Pressable>
+              ) : null}
+            </View>
+          ) : null}
 
           {loadingQty ? (
             <ActivityIndicator color={theme.text} />
@@ -220,14 +384,13 @@ export function StockConfirmSheet({
             <Pressable
               accessibilityRole="button"
               accessibilityLabel={saveError ? 'Retry' : 'Confirm'}
-              disabled={busy || loadingQty || qtyError != null}
+              disabled={confirmDisabled}
               onPress={() => void handleConfirm()}
               style={({ pressed }) => [
                 styles.actionButton,
                 {
                   backgroundColor: theme.backgroundSelected,
-                  opacity:
-                    pressed || busy || loadingQty || qtyError != null ? 0.6 : 1,
+                  opacity: pressed || confirmDisabled ? 0.6 : 1,
                 },
               ]}>
               {busy ? (
@@ -260,6 +423,12 @@ const styles = StyleSheet.create({
   },
   barcode: {
     fontVariant: ['tabular-nums'],
+  },
+  lookupRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.two,
+    flexWrap: 'wrap',
   },
   stepper: {
     flexDirection: 'row',

@@ -1,4 +1,5 @@
 import type { StockItemIdentityFields } from '@/types/stock';
+import { Platform } from 'react-native';
 
 const DEFAULT_OFF_BASE_URL = 'https://world.openfoodfacts.org';
 const CACHE_TTL_MS = 30 * 60 * 1000;
@@ -271,12 +272,16 @@ export async function lookupOpenFoodFactsProduct(
 
   let response: Response;
   try {
+    const headers: Record<string, string> = {
+      Accept: 'application/json',
+    };
+    // Browsers forbid setting User-Agent on fetch; native can send OFF's required UA.
+    if (Platform.OS !== 'web') {
+      headers['User-Agent'] = OFF_USER_AGENT;
+    }
     response = await fetch(url, {
       method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'User-Agent': OFF_USER_AGENT,
-      },
+      headers,
     });
   } catch (cause) {
     const error =
