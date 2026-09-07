@@ -19,31 +19,6 @@ export async function listStockItems(): Promise<StockItem[]> {
 }
 
 /**
- * Case-insensitive barcode prefix search for the current household.
- * Empty / whitespace-only prefix returns an empty list (no full scan).
- */
-export async function searchStockByBarcodePrefix(
-  prefix: string
-): Promise<StockItem[]> {
-  const trimmed = prefix.trim();
-  if (trimmed === '') {
-    return [];
-  }
-
-  const { data, error } = await supabase
-    .from('stock_items')
-    .select(STOCK_SELECT)
-    .ilike('barcode', `${trimmed}%`)
-    .order('updated_at', { ascending: false });
-
-  if (error) {
-    throw error;
-  }
-
-  return data ?? [];
-}
-
-/**
  * Looks up a single stock row by exact barcode for the current household.
  * Returns null when no row exists (confirm sheet shows current qty 0).
  */

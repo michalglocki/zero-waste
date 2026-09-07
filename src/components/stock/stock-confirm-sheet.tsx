@@ -86,6 +86,10 @@ export function StockConfirmSheet({
   }
 
   async function handleConfirm() {
+    if (busy || qtyError) {
+      return;
+    }
+
     setSaveError(null);
 
     if (delta < 1) {
@@ -105,7 +109,15 @@ export function StockConfirmSheet({
   }
 
   return (
-    <Modal visible animationType="slide" transparent onRequestClose={onDismiss}>
+    <Modal
+      visible
+      animationType="slide"
+      transparent
+      onRequestClose={() => {
+        if (!busy) {
+          onDismiss();
+        }
+      }}>
       <View style={styles.backdrop}>
         <View
           style={[
@@ -208,13 +220,14 @@ export function StockConfirmSheet({
             <Pressable
               accessibilityRole="button"
               accessibilityLabel={saveError ? 'Retry' : 'Confirm'}
-              disabled={busy || loadingQty}
+              disabled={busy || loadingQty || qtyError != null}
               onPress={() => void handleConfirm()}
               style={({ pressed }) => [
                 styles.actionButton,
                 {
                   backgroundColor: theme.backgroundSelected,
-                  opacity: pressed || busy || loadingQty ? 0.6 : 1,
+                  opacity:
+                    pressed || busy || loadingQty || qtyError != null ? 0.6 : 1,
                 },
               ]}>
               {busy ? (
