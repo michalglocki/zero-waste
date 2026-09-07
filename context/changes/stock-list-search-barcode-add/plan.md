@@ -359,11 +359,11 @@ MVP household lists are small; client-side or simple `ILIKE 'prefix%'` query is 
 
 #### Automated
 
-- [x] 4.1 `manual-verification.md` exists in the change folder
-- [x] 4.2 `npm run typecheck` passes
-- [x] 4.3 `npm run lint` passes
+- [x] 4.1 `manual-verification.md` exists in the change folder — f832dd0
+- [x] 4.2 `npm run typecheck` passes — f832dd0
+- [x] 4.3 `npm run lint` passes — f832dd0
 
 #### Manual
 
-- [x] 4.4 Checklist executed at least once on a real device (camera path) and once via typed fallback
-- [x] 4.5 Two members of the same household see the same stock row after one adds
+- [x] 4.4 Checklist executed at least once on a real device (camera path) and once via typed fallback — f832dd0
+- [x] 4.5 Two members of the same household see the same stock row after one adds — f832dd0
