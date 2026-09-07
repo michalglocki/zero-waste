@@ -1,8 +1,15 @@
 import { supabase } from '@/lib/supabase';
-import type { StockItem, StockItemIdentityFields } from '@/types/stock';
+import type {
+  RemoveStockResult,
+  StockItem,
+  StockItemIdentityFields,
+} from '@/types/stock';
 
 const STOCK_SELECT =
   'id, household_id, barcode, quantity, name, main_category, auxiliary_category, pack_size, created_at, updated_at';
+
+/** Stable message for missing-row remove — UI maps this to "Not in stock". */
+export const STOCK_NOT_IN_STOCK_MESSAGE = 'stock item not found';
 
 const IDENTITY_KEYS = [
   'name',
@@ -10,6 +17,29 @@ const IDENTITY_KEYS = [
   'auxiliary_category',
   'pack_size',
 ] as const satisfies readonly (keyof StockItemIdentityFields)[];
+
+function isStockNotInStockRpcError(error: { message?: string }): boolean {
+  const message = error.message ?? '';
+  return message === STOCK_NOT_IN_STOCK_MESSAGE || message.includes(STOCK_NOT_IN_STOCK_MESSAGE);
+}
+
+function mapRemoveRpcPayload(data: unknown): RemoveStockResult {
+  if (data == null || typeof data !== 'object') {
+    throw new Error('unexpected remove result');
+  }
+
+  const payload = data as { deleted?: unknown; item?: unknown };
+
+  if (payload.deleted === true) {
+    return { deleted: true };
+  }
+
+  if (payload.deleted === false && payload.item != null && typeof payload.item === 'object') {
+    return { deleted: false, item: payload.item as StockItem };
+  }
+
+  throw new Error('unexpected remove result');
+}
 
 /** Lists current household stock, newest-updated first. */
 export async function listStockItems(): Promise<StockItem[]> {
@@ -77,6 +107,34 @@ export async function addStockByBarcode(
   }
 
   return data as StockItem;
+}
+
+/**
+ * Decrements quantity by 1 for `barcode` in the caller's household via
+ * `remove_stock_item_by_barcode`. Records a utilization event server-side.
+ * When quantity would hit 0, the row is deleted (`{ deleted: true }`).
+ * Missing row → throws with {@link STOCK_NOT_IN_STOCK_MESSAGE} (no event written).
+ */
+export async function removeStockByBarcode(
+  barcode: string
+): Promise<RemoveStockResult> {
+  const trimmed = barcode.trim();
+  if (trimmed === '') {
+    throw new Error('barcode required');
+  }
+
+  const { data, error } = await supabase.rpc('remove_stock_item_by_barcode', {
+    p_barcode: trimmed,
+  });
+
+  if (error) {
+    if (isStockNotInStockRpcError(error)) {
+      throw new Error(STOCK_NOT_IN_STOCK_MESSAGE);
+    }
+    throw error;
+  }
+
+  return mapRemoveRpcPayload(data);
 }
 
 /**

@@ -267,26 +267,26 @@ Single-row RPC per tap; list is already household-scoped and refetch-on-focus. E
 
 #### Automated
 
-- [x] 1.1 Migration file exists under `supabase/migrations/` with events table, DELETE grant/policy on `stock_items`, and `remove_stock_item_by_barcode`
-- [x] 1.2 `npm run typecheck` passes (no broken imports if types touched)
-- [x] 1.3 `npm run lint` passes
+- [x] 1.1 Migration file exists under `supabase/migrations/` with events table, DELETE grant/policy on `stock_items`, and `remove_stock_item_by_barcode` — 523da87
+- [x] 1.2 `npm run typecheck` passes (no broken imports if types touched) — 523da87
+- [x] 1.3 `npm run lint` passes — 523da87
 
 #### Manual
 
-- [x] 1.4 Migration applied to the project Supabase instance
-- [x] 1.5 Via SQL or RPC: qty 2 → remove → qty 1 + one event; qty 1 → remove → row gone + second event; remove on missing barcode fails with not-found style error and zero new events for that attempt
-- [x] 1.6 Second household cannot remove or read the first household’s events/rows
+- [x] 1.4 Migration applied to the project Supabase instance — 523da87
+- [x] 1.5 Via SQL or RPC: qty 2 → remove → qty 1 + one event; qty 1 → remove → row gone + second event; remove on missing barcode fails with not-found style error and zero new events for that attempt — 523da87
+- [x] 1.6 Second household cannot remove or read the first household’s events/rows — 523da87
 
 ### Phase 2: Client remove service
 
 #### Automated
 
-- [ ] 2.1 `npm run typecheck` passes with the new export compiling
-- [ ] 2.2 `npm run lint` passes
+- [x] 2.1 `npm run typecheck` passes with the new export compiling
+- [x] 2.2 `npm run lint` passes
 
 #### Manual
 
-- [ ] 2.3 Throwaway call or temporary screen hook: remove on qty≥2 returns updated item; remove on qty 1 returns deleted; repeat remove on same barcode after delete surfaces not-in-stock / not-found with no new event
+- [x] 2.3 Throwaway call or temporary screen hook: remove on qty≥2 returns updated item; remove on qty 1 returns deleted; repeat remove on same barcode after delete surfaces not-in-stock / not-found with no new event
 
 ### Phase 3: Consume tab, list −, last-unit confirm, Not in stock
 
