@@ -1,7 +1,7 @@
 ---
 change_id: remove-stock-item
 title: Decrement stock by 1 and store utilization events
-status: plan_reviewed
+status: implementing
 created: 2026-09-07
 updated: 2026-09-07
 archived_at: null

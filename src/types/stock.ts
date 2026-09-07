@@ -11,6 +11,11 @@ export type StockItem = {
   updated_at: string;
 };
 
+/** Result of `remove_stock_item_by_barcode` — never confuse delete with a null StockItem. */
+export type RemoveStockResult =
+  | { deleted: true }
+  | { deleted: false; item: StockItem };
+
 /** Optional identity fields for diff-only enrich updates (qty never included). */
 export type StockItemIdentityFields = {
   name?: string | null;

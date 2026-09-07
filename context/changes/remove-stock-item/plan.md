@@ -267,15 +267,15 @@ Single-row RPC per tap; list is already household-scoped and refetch-on-focus. E
 
 #### Automated
 
-- [ ] 1.1 Migration file exists under `supabase/migrations/` with events table, DELETE grant/policy on `stock_items`, and `remove_stock_item_by_barcode`
-- [ ] 1.2 `npm run typecheck` passes (no broken imports if types touched)
-- [ ] 1.3 `npm run lint` passes
+- [x] 1.1 Migration file exists under `supabase/migrations/` with events table, DELETE grant/policy on `stock_items`, and `remove_stock_item_by_barcode`
+- [x] 1.2 `npm run typecheck` passes (no broken imports if types touched)
+- [x] 1.3 `npm run lint` passes
 
 #### Manual
 
-- [ ] 1.4 Migration applied to the project Supabase instance
-- [ ] 1.5 Via SQL or RPC: qty 2 → remove → qty 1 + one event; qty 1 → remove → row gone + second event; remove on missing barcode fails with not-found style error and zero new events for that attempt
-- [ ] 1.6 Second household cannot remove or read the first household’s events/rows
+- [x] 1.4 Migration applied to the project Supabase instance
+- [x] 1.5 Via SQL or RPC: qty 2 → remove → qty 1 + one event; qty 1 → remove → row gone + second event; remove on missing barcode fails with not-found style error and zero new events for that attempt
+- [x] 1.6 Second household cannot remove or read the first household’s events/rows
 
 ### Phase 2: Client remove service
 

@@ -44,7 +44,7 @@ Household members forget what they already have when they shop or plan a list, s
 | F-01 | minimal-household-auth | (foundation) a signed-in user is tied to one household so stock can be shared | — | Access Control | in-progress |
 | S-01 | stock-list-search-barcode-add | view household stock, search it, and add a product by scanning its barcode | F-01 | US-01, FR-001, FR-002, FR-003, FR-007, FR-008 | in-progress |
 | S-02 | barcode-open-food-facts-identify | after a scan, store the barcode and fill known name/category fields from Open Food Facts when present | S-01 | US-02, FR-006, FR-007, FR-008 | in-progress |
-| S-03 | remove-stock-item | decrease stock by 1; store the remove; drop the row when quantity hits 0 | S-01 | US-01, FR-004, FR-009 | planning |
+| S-03 | remove-stock-item | decrease stock by 1; store the remove; drop the row when quantity hits 0 | S-01 | US-01, FR-004, FR-009 | in-progress |
 | S-04 | manual-add-without-barcode | add a product by hand (barcode number + quantity; no unit) | S-01 | FR-005, FR-007, FR-008 | proposed |
 | S-05 | likely-empty-recommendations | open a recommendations list of quantity-1 products overdue vs their average removal interval | S-03 | US-03, FR-010, FR-011 | proposed |
 
@@ -118,7 +118,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** Needed to keep stock current and to leave a utilization history for S-05. Sequenced after S-01 because quantity must already exist on the list.
-- **Status:** planning
+- **Status:** in-progress
 
 ### S-04: Manual add without a barcode
 
