@@ -8,13 +8,30 @@ type StockListRowProps = {
   item: StockItem;
 };
 
-/** Primary label = barcode; quantity beside it (empty name until S-02). */
+function secondaryLine(item: StockItem): string | null {
+  const parts = [item.main_category, item.pack_size].filter(
+    (part): part is string => part != null && part.length > 0
+  );
+  return parts.length > 0 ? parts.join(' · ') : null;
+}
+
+/** Primary label = name when set, else barcode; optional category/pack secondary. */
 export function StockListRow({ item }: StockListRowProps) {
+  const primary = item.name ?? item.barcode;
+  const meta = secondaryLine(item);
+
   return (
     <View style={styles.row}>
-      <ThemedText type="default" style={styles.barcode} numberOfLines={1}>
-        {item.barcode}
-      </ThemedText>
+      <View style={styles.label}>
+        <ThemedText type="default" numberOfLines={1}>
+          {primary}
+        </ThemedText>
+        {meta ? (
+          <ThemedText type="small" themeColor="textSecondary" numberOfLines={1}>
+            {meta}
+          </ThemedText>
+        ) : null}
+      </View>
       <ThemedText type="smallBold" style={styles.qty}>
         {item.quantity}
       </ThemedText>
@@ -31,8 +48,9 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.three,
     paddingHorizontal: Spacing.one,
   },
-  barcode: {
+  label: {
     flex: 1,
+    gap: Spacing.half,
   },
   qty: {
     minWidth: 32,

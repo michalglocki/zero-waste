@@ -371,31 +371,31 @@ Surface enriched identity on the stock list and record an end-to-end checklist.
 
 #### Automated
 
-- [x] 3.1 Confirm sheet starts lookup on barcode mount (cache then OFF) and does not await OFF inside the Confirm handler before qty write
-- [x] 3.2 `npm run typecheck` passes
-- [x] 3.3 `npm run lint` passes
+- [x] 3.1 Confirm sheet starts lookup on barcode mount (cache then OFF) and does not await OFF inside the Confirm handler before qty write — a8b10b7
+- [x] 3.2 `npm run typecheck` passes — a8b10b7
+- [x] 3.3 `npm run lint` passes — a8b10b7
 
 #### Manual
 
-- [x] 3.4 Existing enriched row: sheet shows DB name immediately; Confirm +1 works; unchanged OFF data does not rewrite identical fields
-- [x] 3.5 New barcode: Confirm during lookup succeeds; identity appears on list after focus refetch once OFF completes in background
-- [x] 3.6 Nonsense barcode: “Not found”; Confirm still adds barcode-only row
-- [x] 3.7 Offline / failed lookup: soft error + Retry; Confirm still works; existing DB identity unchanged
-- [x] 3.8 Second scan of same barcode within 30 min: cache hit (no duplicate OFF request)
-- [x] 3.9 Delta 0 Confirm: dismiss only; no qty change; no forced identity write
-- [x] 3.10 Cancel without Confirm: no identity DB write for a new barcode
+- [x] 3.4 Existing enriched row: sheet shows DB name immediately; Confirm +1 works; unchanged OFF data does not rewrite identical fields — a8b10b7
+- [x] 3.5 New barcode: Confirm during lookup succeeds; identity appears on list after focus refetch once OFF completes in background — a8b10b7
+- [x] 3.6 Nonsense barcode: “Not found”; Confirm still adds barcode-only row — a8b10b7
+- [x] 3.7 Offline / failed lookup: soft error + Retry; Confirm still works; existing DB identity unchanged — a8b10b7
+- [x] 3.8 Second scan of same barcode within 30 min: cache hit (no duplicate OFF request) — a8b10b7
+- [x] 3.9 Delta 0 Confirm: dismiss only; no qty change; no forced identity write — a8b10b7
+- [x] 3.10 Cancel without Confirm: no identity DB write for a new barcode — a8b10b7
 
 ### Phase 4: List display + manual verification
 
 #### Automated
 
-- [ ] 4.1 List row uses name-or-barcode primary labeling
-- [ ] 4.2 `npm run typecheck` passes
-- [ ] 4.3 `npm run lint` passes
-- [ ] 4.4 Manual verification doc exists under this change folder
+- [x] 4.1 List row uses name-or-barcode primary labeling
+- [x] 4.2 `npm run typecheck` passes
+- [x] 4.3 `npm run lint` passes
+- [x] 4.4 Manual verification doc exists under this change folder
 
 #### Manual
 
-- [ ] 4.5 Enriched row shows name + secondary metadata; unenriched row shows barcode only
-- [ ] 4.6 Prefix search by barcode still finds enriched rows; name search does not filter
-- [ ] 4.7 Full checklist in `manual-verification.md` completed
+- [x] 4.5 Enriched row shows name + secondary metadata; unenriched row shows barcode only
+- [x] 4.6 Prefix search by barcode still finds enriched rows; name search does not filter
+- [x] 4.7 Full checklist in `manual-verification.md` completed

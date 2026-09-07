@@ -10,7 +10,7 @@ function WebHeaderNav({ active }: { active: 'stock' | 'household' }) {
 
   return (
     <View style={styles.nav}>
-      <Link href="/(app)/(tabs)/index" asChild>
+      <Link href="/(app)/(tabs)" asChild>
         <Pressable
           accessibilityRole="link"
           accessibilityState={{ selected: active === 'stock' }}
