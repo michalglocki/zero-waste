@@ -6,6 +6,7 @@
     "@expo/ui": "~56.0.14",
     "@supabase/supabase-js": "^2.115.0",
     "expo": "~56.0.5",
+    "expo-camera": "~56.0.8",
     "expo-constants": "~56.0.16",
     "expo-device": "~56.0.4",
     "expo-font": "~56.0.5",

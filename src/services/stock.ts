@@ -44,6 +44,31 @@ export async function searchStockByBarcodePrefix(
 }
 
 /**
+ * Looks up a single stock row by exact barcode for the current household.
+ * Returns null when no row exists (confirm sheet shows current qty 0).
+ */
+export async function getStockItemByBarcode(
+  barcode: string
+): Promise<StockItem | null> {
+  const trimmed = barcode.trim();
+  if (trimmed === '') {
+    return null;
+  }
+
+  const { data, error } = await supabase
+    .from('stock_items')
+    .select(STOCK_SELECT)
+    .eq('barcode', trimmed)
+    .maybeSingle();
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+}
+
+/**
  * Adds `delta` (≥ 1) for `barcode` in the caller's household.
  * Inserts a new row or atomically increments quantity under the unique key
  * via `add_stock_item_by_barcode` (PostgREST upsert cannot express qty + delta).

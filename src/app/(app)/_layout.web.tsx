@@ -80,6 +80,7 @@ export default function AppLayout() {
           }}
         />
         <Stack.Screen name="join" options={{ title: 'Join household' }} />
+        <Stack.Screen name="scan" options={{ title: 'Scan' }} />
       </Stack>
     </>
   );

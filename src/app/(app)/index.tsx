@@ -2,10 +2,11 @@ import { useCallback, useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
+  Pressable,
   StyleSheet,
   View,
 } from 'react-native';
-import { useFocusEffect } from 'expo-router';
+import { Link, useFocusEffect } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { StockEmptyState } from '@/components/stock/stock-empty-state';
@@ -70,7 +71,25 @@ export default function StockHomeScreen() {
   return (
     <ThemedView style={styles.container}>
       <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
-        <ThemedText type="subtitle">Stock</ThemedText>
+        <View style={styles.headerRow}>
+          <ThemedText type="subtitle" style={styles.headerTitle}>
+            Stock
+          </ThemedText>
+          <Link href="/(app)/scan" asChild>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="Scan barcode"
+              style={({ pressed }) => [
+                styles.scanButton,
+                {
+                  backgroundColor: theme.backgroundSelected,
+                  opacity: pressed ? 0.7 : 1,
+                },
+              ]}>
+              <ThemedText type="smallBold">Scan</ThemedText>
+            </Pressable>
+          </Link>
+        </View>
 
         <StockSearchField value={query} onChangeText={setQuery} />
 
@@ -114,6 +133,22 @@ const styles = StyleSheet.create({
     maxWidth: MaxContentWidth,
     paddingHorizontal: Spacing.four,
     gap: Spacing.three,
+  },
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: Spacing.three,
+  },
+  headerTitle: {
+    flex: 1,
+  },
+  scanButton: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: 44,
+    paddingHorizontal: Spacing.three,
+    borderRadius: Spacing.two,
   },
   loader: {
     marginTop: Spacing.four,

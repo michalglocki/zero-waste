@@ -35,6 +35,14 @@
             "imageWidth": 76
           }
         }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow Zero waste to use the camera to scan product barcodes.",
+          "barcodeScannerEnabled": true,
+          "recordAudioAndroid": false
+        }
       ]
     ],
     "experiments": {

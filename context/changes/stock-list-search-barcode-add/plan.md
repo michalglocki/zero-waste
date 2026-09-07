@@ -324,36 +324,36 @@ MVP household lists are small; client-side or simple `ILIKE 'prefix%'` query is 
 
 #### Automated
 
-- [x] 2.1 `npm run typecheck` passes
-- [x] 2.2 `npm run lint` passes
+- [x] 2.1 `npm run typecheck` passes — 78cc1a5
+- [x] 2.2 `npm run lint` passes — 78cc1a5
 
 #### Manual
 
-- [x] 2.3 Signed-in user lands on stock list (empty state if no rows)
-- [x] 2.4 Prefix search returns matching barcodes and shows empty results when none match
-- [x] 2.5 Household tab still shows invite code, join, and sign-out
-- [x] 2.6 Explore tutorial route is deleted or unreachable (not only unlabeled)
-- [x] 2.7 Returning to stock after leaving the screen triggers a list refetch (focus), not only initial mount
-- [x] 2.8 List order is newest-updated first (`updated_at` desc)
-- [x] 2.9 Web tab chrome no longer shows “Expo Starter” branding (rename or remove)
+- [x] 2.3 Signed-in user lands on stock list (empty state if no rows) — 78cc1a5
+- [x] 2.4 Prefix search returns matching barcodes and shows empty results when none match — 78cc1a5
+- [x] 2.5 Household tab still shows invite code, join, and sign-out — 78cc1a5
+- [x] 2.6 Explore tutorial route is deleted or unreachable (not only unlabeled) — 78cc1a5
+- [x] 2.7 Returning to stock after leaving the screen triggers a list refetch (focus), not only initial mount — 78cc1a5
+- [x] 2.8 List order is newest-updated first (`updated_at` desc) — 78cc1a5
+- [x] 2.9 Web tab chrome no longer shows “Expo Starter” branding (rename or remove) — 78cc1a5
 
 ### Phase 3: Scan → confirm → upsert
 
 #### Automated
 
-- [ ] 3.1 `npm run typecheck` passes
-- [ ] 3.2 `npm run lint` passes
-- [ ] 3.3 `expo-camera` is a dependency and listed in `app.json` plugins with barcode scanning enabled
+- [x] 3.1 `npm run typecheck` passes
+- [x] 3.2 `npm run lint` passes
+- [x] 3.3 `expo-camera` is a dependency and listed in `app.json` plugins with barcode scanning enabled
 
 #### Manual
 
-- [ ] 3.4 Device: scan a real barcode → confirm shows current qty → Confirm +1 → row appears/increases; stay on scanner for a second item
-- [ ] 3.5 Re-scan same code → confirm shows updated current qty → add another delta
-- [ ] 3.6 Confirm with delta 0 → no DB change
-- [ ] 3.7 Deny camera (or use web) → typed barcode path can complete the same upsert
-- [ ] 3.8 Typed code with leading zeros (e.g. `073852000123`) stores and searches as that exact string
-- [ ] 3.9 Kill network or force error → error + Retry on sheet; successful retry writes once
-- [ ] 3.10 Cancel confirm → no write; scanner can be used again
+- [x] 3.4 Device: scan a real barcode → confirm shows current qty → Confirm +1 → row appears/increases; stay on scanner for a second item
+- [x] 3.5 Re-scan same code → confirm shows updated current qty → add another delta
+- [x] 3.6 Confirm with delta 0 → no DB change
+- [x] 3.7 Deny camera (or use web) → typed barcode path can complete the same upsert
+- [x] 3.8 Typed code with leading zeros (e.g. `073852000123`) stores and searches as that exact string
+- [x] 3.9 Kill network or force error → error + Retry on sheet; successful retry writes once
+- [x] 3.10 Cancel confirm → no write; scanner can be used again
 
 ### Phase 4: Manual verification script
 

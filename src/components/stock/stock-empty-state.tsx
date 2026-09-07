@@ -1,18 +1,19 @@
-import { StyleSheet, View } from 'react-native';
+import { Link } from 'expo-router';
+import { Pressable, StyleSheet, View } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { Spacing } from '@/constants/theme';
+import { useTheme } from '@/hooks/use-theme';
 
 type StockEmptyStateProps = {
   /** True when the household has no stock rows at all (vs search miss). */
   kind: 'no-stock' | 'no-results';
 };
 
-/**
- * Empty stock / empty search copy.
- * Scan CTA omitted until Phase 3 wires the scan route (no dead link).
- */
+/** Empty stock / empty search copy, with Scan CTA when there is no stock yet. */
 export function StockEmptyState({ kind }: StockEmptyStateProps) {
+  const theme = useTheme();
+
   if (kind === 'no-results') {
     return (
       <View style={styles.container}>
@@ -30,6 +31,20 @@ export function StockEmptyState({ kind }: StockEmptyStateProps) {
       <ThemedText type="small" themeColor="textSecondary">
         Your household stock list is empty. Scan a barcode to add the first item.
       </ThemedText>
+      <Link href="/(app)/scan" asChild>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Scan barcode"
+          style={({ pressed }) => [
+            styles.scanButton,
+            {
+              backgroundColor: theme.backgroundSelected,
+              opacity: pressed ? 0.7 : 1,
+            },
+          ]}>
+          <ThemedText type="smallBold">Scan</ThemedText>
+        </Pressable>
+      </Link>
     </View>
   );
 }
@@ -39,5 +54,14 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     gap: Spacing.two,
     paddingVertical: Spacing.four,
+  },
+  scanButton: {
+    alignSelf: 'flex-start',
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: 44,
+    paddingHorizontal: Spacing.four,
+    borderRadius: Spacing.two,
+    marginTop: Spacing.one,
   },
 });
