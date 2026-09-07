@@ -39,8 +39,7 @@ export default function ScanScreen() {
 
   return (
     <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
-        <ThemedText type="subtitle">Scan</ThemedText>
+      <SafeAreaView style={styles.safeArea} edges={['left', 'right']}>
         <ThemedText type="small" themeColor="textSecondary">
           {Platform.OS === 'web'
             ? 'Type a product barcode to add it. Camera scanning is available in the native app. After confirm you stay here for the next item.'

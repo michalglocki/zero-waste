@@ -1,6 +1,15 @@
-import AppTabs from '@/components/app-tabs';
+import { Stack } from 'expo-router';
 
-/** Native: system tabs. Web uses `_layout.web.tsx` (Stack) — headless Tabs hrefs were resolving to +not-found. */
+/**
+ * Native: Stack over tabs so Scan/Join can push above the tab bar.
+ * NativeTabs alone only mounts Trigger routes — sibling `scan` was unreachable.
+ */
 export default function AppLayout() {
-  return <AppTabs />;
+  return (
+    <Stack>
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen name="scan" options={{ title: 'Scan', headerBackTitle: 'Stock' }} />
+      <Stack.Screen name="join" options={{ title: 'Join household' }} />
+    </Stack>
+  );
 }

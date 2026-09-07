@@ -341,29 +341,29 @@ MVP household lists are small; client-side or simple `ILIKE 'prefix%'` query is 
 
 #### Automated
 
-- [x] 3.1 `npm run typecheck` passes
-- [x] 3.2 `npm run lint` passes
-- [x] 3.3 `expo-camera` is a dependency and listed in `app.json` plugins with barcode scanning enabled
+- [x] 3.1 `npm run typecheck` passes — 8766538
+- [x] 3.2 `npm run lint` passes — 8766538
+- [x] 3.3 `expo-camera` is a dependency and listed in `app.json` plugins with barcode scanning enabled — 8766538
 
 #### Manual
 
-- [x] 3.4 Device: scan a real barcode → confirm shows current qty → Confirm +1 → row appears/increases; stay on scanner for a second item
-- [x] 3.5 Re-scan same code → confirm shows updated current qty → add another delta
-- [x] 3.6 Confirm with delta 0 → no DB change
-- [x] 3.7 Deny camera (or use web) → typed barcode path can complete the same upsert
-- [x] 3.8 Typed code with leading zeros (e.g. `073852000123`) stores and searches as that exact string
-- [x] 3.9 Kill network or force error → error + Retry on sheet; successful retry writes once
-- [x] 3.10 Cancel confirm → no write; scanner can be used again
+- [x] 3.4 Device: scan a real barcode → confirm shows current qty → Confirm +1 → row appears/increases; stay on scanner for a second item — 8766538
+- [x] 3.5 Re-scan same code → confirm shows updated current qty → add another delta — 8766538
+- [x] 3.6 Confirm with delta 0 → no DB change — 8766538
+- [x] 3.7 Deny camera (or use web) → typed barcode path can complete the same upsert — 8766538
+- [x] 3.8 Typed code with leading zeros (e.g. `073852000123`) stores and searches as that exact string — 8766538
+- [x] 3.9 Kill network or force error → error + Retry on sheet; successful retry writes once — 8766538
+- [x] 3.10 Cancel confirm → no write; scanner can be used again — 8766538
 
 ### Phase 4: Manual verification script
 
 #### Automated
 
-- [ ] 4.1 `manual-verification.md` exists in the change folder
-- [ ] 4.2 `npm run typecheck` passes
-- [ ] 4.3 `npm run lint` passes
+- [x] 4.1 `manual-verification.md` exists in the change folder
+- [x] 4.2 `npm run typecheck` passes
+- [x] 4.3 `npm run lint` passes
 
 #### Manual
 
-- [ ] 4.4 Checklist executed at least once on a real device (camera path) and once via typed fallback
-- [ ] 4.5 Two members of the same household see the same stock row after one adds
+- [x] 4.4 Checklist executed at least once on a real device (camera path) and once via typed fallback
+- [x] 4.5 Two members of the same household see the same stock row after one adds
