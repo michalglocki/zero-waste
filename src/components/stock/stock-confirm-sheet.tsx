@@ -17,6 +17,7 @@ import {
   type OffMappedIdentity,
 } from '@/services/open-food-facts';
 import {
+  abandonEnrichSession,
   beginEnrichSession,
   flushEnrichIfReady,
   identityFromStockRow,
@@ -95,6 +96,7 @@ export function StockConfirmSheet({
   const generationRef = useRef(0);
   const mountedRef = useRef(true);
   const hasOffIdentityRef = useRef(false);
+  const lookupAbortRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
     mountedRef.current = true;
@@ -147,6 +149,8 @@ export function StockConfirmSheet({
 
     return () => {
       cancelled = true;
+      lookupAbortRef.current?.abort();
+      lookupAbortRef.current = null;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps -- barcode-keyed mount session
   }, [barcode]);
@@ -159,16 +163,25 @@ export function StockConfirmSheet({
       invalidateOffIdentityCache(barcode);
     }
 
+    lookupAbortRef.current?.abort();
+    const controller = new AbortController();
+    lookupAbortRef.current = controller;
+
     if (mountedRef.current && generation === generationRef.current) {
       setLookupStatus('looking');
     }
 
     const result = await lookupOpenFoodFactsProduct(barcode, {
       bypassCache: options?.bypassCache,
+      signal: controller.signal,
     });
 
-    // Ignore stale lookups from a previous sheet generation.
-    if (generation !== generationRef.current) {
+    // Ignore stale lookups from a previous sheet generation or aborted request.
+    if (
+      generation !== generationRef.current ||
+      controller.signal.aborted ||
+      lookupAbortRef.current !== controller
+    ) {
       return;
     }
 
@@ -180,7 +193,7 @@ export function StockConfirmSheet({
         setLookupStatus('found');
       }
       // May no-op unless Confirm already marked this generation.
-      await flushEnrichIfReady(barcode, generation);
+      void flushEnrichIfReady(barcode, generation);
       return;
     }
 
@@ -216,6 +229,7 @@ export function StockConfirmSheet({
     setSaveError(null);
 
     if (delta < 1) {
+      abandonEnrichSession(barcode, generationRef.current);
       onSuccess();
       return;
     }
@@ -225,14 +239,19 @@ export function StockConfirmSheet({
       await addStockByBarcode(barcode, delta);
       const generation = generationRef.current;
       markEnrichConfirmed(barcode, generation);
-      // Flush now if OFF already returned; otherwise late lookup will flush.
-      await flushEnrichIfReady(barcode, generation);
+      // Fire-and-forget: qty is primary; identity flush must not block dismiss.
+      void flushEnrichIfReady(barcode, generation);
       onSuccess();
     } catch (err) {
       setSaveError(err instanceof Error ? err.message : 'Could not save. Try again.');
     } finally {
       setBusy(false);
     }
+  }
+
+  function dismissWithoutConfirm() {
+    abandonEnrichSession(barcode, generationRef.current);
+    onDismiss();
   }
 
   const confirmDisabled = busy || loadingQty || qtyError != null;
@@ -246,7 +265,7 @@ export function StockConfirmSheet({
       transparent
       onRequestClose={() => {
         if (!busy) {
-          onDismiss();
+          dismissWithoutConfirm();
         }
       }}>
       <View style={styles.backdrop}>
@@ -370,7 +389,7 @@ export function StockConfirmSheet({
               accessibilityRole="button"
               accessibilityLabel="Cancel"
               disabled={busy}
-              onPress={onDismiss}
+              onPress={dismissWithoutConfirm}
               style={({ pressed }) => [
                 styles.actionButton,
                 {

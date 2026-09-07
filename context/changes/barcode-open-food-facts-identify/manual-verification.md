@@ -115,8 +115,8 @@ Use one primary signed-in household member. Pick a **known in-catalog** barcode 
 
 ## Run log
 
-| Date | Environment (device / sim / web) | Path exercised | Operator | Overall |
-| ---- | -------------------------------- | -------------- | -------- | ------- |
-|      |                                  |                |          | ☐ pass / ☐ fail |
+| Date       | Environment (device / sim / web) | Path exercised            | Operator | Overall |
+| ---------- | -------------------------------- | ------------------------- | -------- | ------- |
+| 2026-09-07 | device / typed fallback          | camera + typed            | human    | ☑ pass  |
 
-**Overall notes:**
+**Overall notes:** Phase 4 manual gate confirmed in-session (list primary/secondary, barcode-prefix search non-goal, full checklist).

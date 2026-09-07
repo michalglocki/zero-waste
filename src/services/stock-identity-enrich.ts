@@ -56,12 +56,26 @@ export function markEnrichConfirmed(barcode: string, generation: number): void {
 }
 
 /**
+ * Drop an unconfirmed enrich session (Cancel / delta 0).
+ * Confirmed sessions stay so a late/background flush can still run.
+ */
+export function abandonEnrichSession(barcode: string, generation: number): void {
+  const trimmed = barcode.trim();
+  const session = sessions.get(trimmed);
+  if (!session || session.generation !== generation || session.confirmed) {
+    return;
+  }
+  sessions.delete(trimmed);
+}
+
+/**
  * Diff-only identity UPDATE when this session is confirmed and has OFF identity.
- * Soft-fails (logs); safe to call from UI and from late OFF completion.
+ * Soft-fails (logs); one background retry on failure; safe after sheet unmount.
  */
 export async function flushEnrichIfReady(
   barcode: string,
-  generation: number
+  generation: number,
+  options?: { isRetry?: boolean }
 ): Promise<void> {
   const trimmed = barcode.trim();
   const session = sessions.get(trimmed);
@@ -80,15 +94,20 @@ export async function flushEnrichIfReady(
 
   try {
     await updateStockItemIdentity(trimmed, toStockIdentityFields(identity));
-    // Success: drop confirmed so a later accidental flush is a no-op.
-    session.confirmed = false;
+    sessions.delete(trimmed);
   } catch (err) {
     session.flushing = false;
     console.warn('[stock-identity-enrich] identity update failed', {
       barcode: trimmed,
       generation,
+      isRetry: options?.isRetry === true,
       err,
     });
+    if (!options?.isRetry) {
+      void flushEnrichIfReady(barcode, generation, { isRetry: true });
+    } else {
+      sessions.delete(trimmed);
+    }
   }
 }
 

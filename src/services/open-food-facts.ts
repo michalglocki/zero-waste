@@ -3,6 +3,7 @@ import { Platform } from 'react-native';
 
 const DEFAULT_OFF_BASE_URL = 'https://world.openfoodfacts.org';
 const CACHE_TTL_MS = 30 * 60 * 1000;
+const OFF_LOOKUP_TIMEOUT_MS = 12_000;
 const APP_NAME = 'ZeroWaste';
 const APP_VERSION = '1.0.0';
 const APP_CONTACT = 'contact@zero-waste.app';
@@ -62,6 +63,43 @@ function offBaseUrl(): string {
     return fromEnv.replace(/\/$/, '');
   }
   return DEFAULT_OFF_BASE_URL;
+}
+
+function isAbortError(cause: unknown): boolean {
+  if (!(cause instanceof Error)) {
+    return false;
+  }
+  return cause.name === 'AbortError' || /aborted/i.test(cause.message);
+}
+
+/** Fetch with timeout; optional external signal aborts the same request. */
+async function fetchOffProduct(
+  url: string,
+  headers: Record<string, string>,
+  externalSignal?: AbortSignal
+): Promise<Response> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), OFF_LOOKUP_TIMEOUT_MS);
+
+  const onExternalAbort = () => controller.abort();
+  if (externalSignal) {
+    if (externalSignal.aborted) {
+      controller.abort();
+    } else {
+      externalSignal.addEventListener('abort', onExternalAbort);
+    }
+  }
+
+  try {
+    return await fetch(url, {
+      method: 'GET',
+      headers,
+      signal: controller.signal,
+    });
+  } finally {
+    clearTimeout(timeoutId);
+    externalSignal?.removeEventListener('abort', onExternalAbort);
+  }
 }
 
 function nonempty(value: unknown): string | null {
@@ -249,7 +287,11 @@ function buildProductUrl(barcode: string, languageSubtag: string): string {
  */
 export async function lookupOpenFoodFactsProduct(
   barcode: string,
-  options?: { bypassCache?: boolean; languageSubtag?: string }
+  options?: {
+    bypassCache?: boolean;
+    languageSubtag?: string;
+    signal?: AbortSignal;
+  }
 ): Promise<OffLookupResult> {
   const trimmed = barcode.trim();
   if (trimmed === '') {
@@ -267,6 +309,14 @@ export async function lookupOpenFoodFactsProduct(
     }
   }
 
+  if (options?.signal?.aborted) {
+    return {
+      outcome: 'error',
+      error: new Error('Open Food Facts lookup aborted'),
+      fromCache: false,
+    };
+  }
+
   const languageSubtag = options?.languageSubtag ?? getDeviceLanguageSubtag();
   const url = buildProductUrl(trimmed, languageSubtag);
 
@@ -279,11 +329,15 @@ export async function lookupOpenFoodFactsProduct(
     if (Platform.OS !== 'web') {
       headers['User-Agent'] = OFF_USER_AGENT;
     }
-    response = await fetch(url, {
-      method: 'GET',
-      headers,
-    });
+    response = await fetchOffProduct(url, headers, options?.signal);
   } catch (cause) {
+    if (isAbortError(cause) || options?.signal?.aborted) {
+      return {
+        outcome: 'error',
+        error: new Error('Open Food Facts lookup timed out or was cancelled'),
+        fromCache: false,
+      };
+    }
     const error =
       cause instanceof Error ? cause : new Error('Open Food Facts network error');
     return { outcome: 'error', error, fromCache: false };

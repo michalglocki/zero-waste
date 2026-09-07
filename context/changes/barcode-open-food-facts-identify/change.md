@@ -1,7 +1,7 @@
 ---
 change_id: barcode-open-food-facts-identify
 title: Identify scanned products via Open Food Facts
-status: implemented
+status: impl_reviewed
 created: 2026-09-07
 updated: 2026-09-07
 archived_at: null

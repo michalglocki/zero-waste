@@ -323,6 +323,7 @@ Surface enriched identity on the stock list and record an end-to-end checklist.
 - Diff-only updates preserve household identity when OFF omits fields.
 - Resolves roadmap/PRD Open Question 6 for MVP mapping (free-text main category; `auxiliary_category` deferred/null in S-02; pack_size as display text). Q7 Beauty Facts and Q8 BFF remain out of scope as decided.
 - Plan-review F1/F2 resolved: background identity apply after delta≥1 Confirm is allowed; Cancel does not persist.
+- Phase 4 typecheck adaptation: web Stock tab href updated from `/(app)/(tabs)/index` to `/(app)/(tabs)` to match Expo typed routes (unrelated to OFF identity).
 
 ## References
 
