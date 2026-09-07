@@ -340,32 +340,32 @@ Surface enriched identity on the stock list and record an end-to-end checklist.
 
 #### Automated
 
-- [x] 1.1 Migration file exists under `supabase/migrations/` adding nullable `pack_size` without altering the qty RPC
-- [x] 1.2 `StockItem` and `STOCK_SELECT` include `pack_size`
-- [x] 1.3 `updateStockItemIdentity` (or equivalent) applies **diff-only** updates to identity/pack columns
-- [x] 1.4 `npm run typecheck` passes
-- [x] 1.5 `npm run lint` passes
+- [x] 1.1 Migration file exists under `supabase/migrations/` adding nullable `pack_size` without altering the qty RPC — ba89f9b
+- [x] 1.2 `StockItem` and `STOCK_SELECT` include `pack_size` — ba89f9b
+- [x] 1.3 `updateStockItemIdentity` (or equivalent) applies **diff-only** updates to identity/pack columns — ba89f9b
+- [x] 1.4 `npm run typecheck` passes — ba89f9b
+- [x] 1.5 `npm run lint` passes — ba89f9b
 
 #### Manual
 
-- [x] 1.6 After applying migration: UPDATE a row’s identity columns via the helper (or SQL + service call) leaves `quantity` unchanged; second household cannot update the first’s row
+- [x] 1.6 After applying migration: UPDATE a row’s identity columns via the helper (or SQL + service call) leaves `quantity` unchanged; second household cannot update the first’s row — ba89f9b
 
 ### Phase 2: OFF client + field mapping
 
 #### Automated
 
-- [ ] 2.1 `src/services/open-food-facts.ts` exists and exports a barcode lookup used by the app
-- [ ] 2.2 Mapper covers name fallbacks, always-null `auxiliary_category`, and nulls for miss/omit cases
-- [ ] 2.3 Cache helpers enforce 30-minute TTL (expired entry treated as miss)
-- [ ] 2.4 `npm run typecheck` passes
-- [ ] 2.5 `npm run lint` passes
+- [x] 2.1 `src/services/open-food-facts.ts` exists and exports a barcode lookup used by the app
+- [x] 2.2 Mapper covers name fallbacks, always-null `auxiliary_category`, and nulls for miss/omit cases
+- [x] 2.3 Cache helpers enforce 30-minute TTL (expired entry treated as miss)
+- [x] 2.4 `npm run typecheck` passes
+- [x] 2.5 `npm run lint` passes
 
 #### Manual
 
-- [ ] 2.6 Against live OFF: a known in-catalog barcode returns non-null `name` when OFF has `product_name`
-- [ ] 2.7 Against a nonsense barcode: outcome is “not found”
-- [ ] 2.8 Network failure path is distinguishable from not-found for soft status copy
-- [ ] 2.9 Second lookup of the same barcode within TTL does not require a new network round-trip
+- [x] 2.6 Against live OFF: a known in-catalog barcode returns non-null `name` when OFF has `product_name`
+- [x] 2.7 Against a nonsense barcode: outcome is “not found”
+- [x] 2.8 Network failure path is distinguishable from not-found for soft status copy
+- [x] 2.9 Second lookup of the same barcode within TTL does not require a new network round-trip
 
 ### Phase 3: Confirm sheet soft enrich + persist
 
