@@ -389,13 +389,13 @@ Surface enriched identity on the stock list and record an end-to-end checklist.
 
 #### Automated
 
-- [x] 4.1 List row uses name-or-barcode primary labeling
-- [x] 4.2 `npm run typecheck` passes
-- [x] 4.3 `npm run lint` passes
-- [x] 4.4 Manual verification doc exists under this change folder
+- [x] 4.1 List row uses name-or-barcode primary labeling — 17c02d0
+- [x] 4.2 `npm run typecheck` passes — 17c02d0
+- [x] 4.3 `npm run lint` passes — 17c02d0
+- [x] 4.4 Manual verification doc exists under this change folder — 17c02d0
 
 #### Manual
 
-- [x] 4.5 Enriched row shows name + secondary metadata; unenriched row shows barcode only
-- [x] 4.6 Prefix search by barcode still finds enriched rows; name search does not filter
-- [x] 4.7 Full checklist in `manual-verification.md` completed
+- [x] 4.5 Enriched row shows name + secondary metadata; unenriched row shows barcode only — 17c02d0
+- [x] 4.6 Prefix search by barcode still finds enriched rows; name search does not filter — 17c02d0
+- [x] 4.7 Full checklist in `manual-verification.md` completed — 17c02d0
