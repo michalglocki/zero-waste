@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -53,10 +53,24 @@ export default function ConsumeScreen() {
   const [loading, setLoading] = useState(true);
   const [listError, setListError] = useState<string | null>(null);
   const [busyBarcode, setBusyBarcode] = useState<string | null>(null);
+  const busyBarcodeRef = useRef<string | null>(null);
   const [actionError, setActionError] = useState<ActionError | null>(null);
 
-  const refetchList = useCallback(async () => {
-    setLoading(true);
+  const lockBusy = useCallback((barcode: string) => {
+    busyBarcodeRef.current = barcode;
+    setBusyBarcode(barcode);
+  }, []);
+
+  const unlockBusy = useCallback(() => {
+    busyBarcodeRef.current = null;
+    setBusyBarcode(null);
+  }, []);
+
+  const refetchList = useCallback(async (opts?: { quiet?: boolean }) => {
+    const quiet = opts?.quiet === true;
+    if (!quiet) {
+      setLoading(true);
+    }
     setListError(null);
     try {
       const rows = await listStockItems();
@@ -65,7 +79,9 @@ export default function ConsumeScreen() {
       setItems([]);
       setListError(err instanceof Error ? err.message : 'Could not load stock.');
     } finally {
-      setLoading(false);
+      if (!quiet) {
+        setLoading(false);
+      }
     }
   }, []);
 
@@ -103,57 +119,65 @@ export default function ConsumeScreen() {
     }, [])
   );
 
-  const applyRemove = useCallback(async (barcode: string) => {
-    setBusyBarcode(barcode);
-    setActionError(null);
+  const applyRemove = useCallback(
+    async (barcode: string) => {
+      setActionError(null);
 
-    try {
-      const result = await removeStockByBarcode(barcode);
-      if (result.deleted) {
-        setItems((prev) => prev.filter((row) => row.barcode !== barcode));
-      } else {
-        setItems((prev) =>
-          prev.map((row) => (row.barcode === barcode ? result.item : row))
-        );
-      }
-    } catch (err) {
-      const message = err instanceof Error ? err.message : 'Could not remove item.';
-      if (message === STOCK_NOT_IN_STOCK_MESSAGE) {
+      try {
+        const result = await removeStockByBarcode(barcode);
+        if (result.deleted) {
+          setItems((prev) => prev.filter((row) => row.barcode !== barcode));
+        } else {
+          setItems((prev) =>
+            prev.map((row) => (row.barcode === barcode ? result.item : row))
+          );
+        }
+      } catch (err) {
+        const message = err instanceof Error ? err.message : 'Could not remove item.';
+        if (message === STOCK_NOT_IN_STOCK_MESSAGE) {
+          setActionError({
+            message: 'Not in stock',
+            retryable: false,
+            barcode: null,
+          });
+          await refetchList({ quiet: true });
+          return;
+        }
         setActionError({
-          message: 'Not in stock',
-          retryable: false,
-          barcode: null,
+          message,
+          retryable: true,
+          barcode,
         });
-        await refetchList();
-        return;
+      } finally {
+        unlockBusy();
       }
-      setActionError({
-        message,
-        retryable: true,
-        barcode,
-      });
-    } finally {
-      setBusyBarcode(null);
-    }
-  }, [refetchList]);
+    },
+    [refetchList, unlockBusy]
+  );
 
   const handleRemove = useCallback(
     async (item: StockItem) => {
-      if (busyBarcode != null) {
+      if (busyBarcodeRef.current != null) {
         return;
       }
+
+      lockBusy(item.barcode);
 
       if (item.quantity === 1) {
         const primary = item.name ?? item.barcode;
         const confirmed = await confirmLastUnit(primary);
         if (!confirmed) {
+          unlockBusy();
+          return;
+        }
+        if (busyBarcodeRef.current !== item.barcode) {
           return;
         }
       }
 
       await applyRemove(item.barcode);
     },
-    [applyRemove, busyBarcode]
+    [applyRemove, lockBusy, unlockBusy]
   );
 
   const prefix = query.trim().toLowerCase();
@@ -190,7 +214,12 @@ export default function ConsumeScreen() {
                 accessibilityLabel="Retry remove"
                 disabled={busyBarcode != null}
                 onPress={() => {
-                  void applyRemove(actionError.barcode!);
+                  const barcode = actionError.barcode;
+                  if (barcode == null || busyBarcodeRef.current != null) {
+                    return;
+                  }
+                  lockBusy(barcode);
+                  void applyRemove(barcode);
                 }}
                 style={({ pressed }) => [
                   styles.retryButton,
@@ -222,7 +251,7 @@ export default function ConsumeScreen() {
                   void handleRemove(item);
                 }}
                 busy={busyBarcode === item.barcode}
-                disabled={busyBarcode != null && busyBarcode !== item.barcode}
+                disabled={busyBarcode != null}
               />
             )}
             contentContainerStyle={styles.listContent}
