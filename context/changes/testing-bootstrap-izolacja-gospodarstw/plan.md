@@ -455,10 +455,10 @@ No production schema migrations required for the happy path. If tests need a hel
 
 #### Automated
 
-- [x] 5.1 §6.2 is no longer TBD; §6.6 notes appended
-- [x] 5.2 Full `npm test` still green
+- [x] 5.1 §6.2 is no longer TBD; §6.6 notes appended — 3e477ca
+- [x] 5.2 Full `npm test` still green — 3e477ca
 
 #### Manual
 
-- [x] 5.3 Skim §6.2 usability for a new agent
-- [x] 5.4 Confirm §2 no longer implies Worker relevance for isolation risks
+- [x] 5.3 Skim §6.2 usability for a new agent — 3e477ca
+- [x] 5.4 Confirm §2 no longer implies Worker relevance for isolation risks — 3e477ca

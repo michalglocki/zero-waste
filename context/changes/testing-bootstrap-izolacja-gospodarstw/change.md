@@ -1,7 +1,7 @@
 ---
 change_id: testing-bootstrap-izolacja-gospodarstw
 title: Bootstrap + izolacja gospodarstw — test rollout Phase 1
-status: implementing
+status: implemented
 created: 2026-09-08
 updated: 2026-09-08
 archived_at: null
