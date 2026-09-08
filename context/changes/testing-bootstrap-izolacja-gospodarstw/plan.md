@@ -431,25 +431,25 @@ No production schema migrations required for the happy path. If tests need a hel
 
 #### Automated
 
-- [x] 3.1 Isolation suite passes against hosted test Supabase with fixtures
-- [x] 3.2 Suite fails if run with only one household seeded (spot-check or structural fixture assert)
-- [x] 3.3 `npm test` still runs smoke + integration (gating documented if used)
+- [x] 3.1 Isolation suite passes against hosted test Supabase with fixtures — 2a50ccb
+- [x] 3.2 Suite fails if run with only one household seeded (spot-check or structural fixture assert) — 2a50ccb
+- [x] 3.3 `npm test` still runs smoke + integration (gating documented if used) — 2a50ccb
 
 #### Manual
 
-- [x] 3.4 Optional spot-check that suite would catch an RLS regression
+- [x] 3.4 Optional spot-check that suite would catch an RLS regression — 2a50ccb
 
 ### Phase 4: #2b baseline allow + Protected route-gate
 
 #### Automated
 
-- [ ] 4.1 #2b baseline tests pass (allow) on local DB
-- [ ] 4.2 Route-gate truth-table passes under `npm test`
-- [ ] 4.3 Cross-household deny from Phase 3 still passes alongside #2b allow
+- [x] 4.1 #2b baseline tests pass (allow) on local DB
+- [x] 4.2 Route-gate truth-table passes under `npm test`
+- [x] 4.3 Cross-household deny from Phase 3 still passes alongside #2b allow
 
 #### Manual
 
-- [ ] 4.4 Read #2b test comments: future agent understands allow = known MVP debt
+- [x] 4.4 Read #2b test comments: future agent understands allow = known MVP debt
 
 ### Phase 5: Cookbook §6.2 + light §2 fix
 

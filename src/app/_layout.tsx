@@ -5,6 +5,7 @@ import { useColorScheme } from 'react-native';
 
 import { useAuth } from '@/hooks/use-auth';
 import { useHousehold } from '@/hooks/use-household';
+import { rootRouteGuards } from '@/lib/root-route-guards';
 import { AuthProvider } from '@/providers/auth-provider';
 import { HouseholdProvider } from '@/providers/household-provider';
 
@@ -29,20 +30,23 @@ function RootNavigator() {
   const { session } = useAuth();
   const { membership, isMembershipReady } = useHousehold();
 
-  const hasSession = !!session;
-  const hasMembership = !!membership;
+  const guards = rootRouteGuards({
+    hasSession: !!session,
+    hasMembership: !!membership,
+    isMembershipReady,
+  });
 
   return (
     <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Protected guard={hasSession && hasMembership}>
+      <Stack.Protected guard={guards.app}>
         <Stack.Screen name="(app)" />
       </Stack.Protected>
 
-      <Stack.Protected guard={hasSession && !hasMembership && isMembershipReady}>
+      <Stack.Protected guard={guards.bootstrapHousehold}>
         <Stack.Screen name="bootstrap-household" />
       </Stack.Protected>
 
-      <Stack.Protected guard={!hasSession}>
+      <Stack.Protected guard={guards.auth}>
         <Stack.Screen name="(auth)" />
       </Stack.Protected>
     </Stack>

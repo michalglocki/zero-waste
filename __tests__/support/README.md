@@ -68,6 +68,10 @@ Missing env or unreachable API → **clear failure** (no false green). The check
 - `harness-self-check.test.ts` — seed + authenticate A/B
 - `readiness-fail-fast.test.ts` — missing env / unreachable URL
 - `db-isolation.test.ts` — risks **#1** (cross-household), **#2a** (membership deny), **#5** (anon + non-member)
+- `db-trusted-client-baseline.test.ts` — risk **#2b** trusted-client **allow** baseline/alarm (own-household direct DELETE + unpaired utilization INSERT; not a harden)
+
+Protected route-gate truth-table (secondary #5) lives under `__tests__/root-route-guards.test.ts` and runs via `npm test` (jest-expo), not this integration config.
+
 ## Privilege split
 
 | Client | Key | Use |
