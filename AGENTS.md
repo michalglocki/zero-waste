@@ -24,7 +24,7 @@ Zero waste is a household inventory mobile MVP on Expo SDK 56 (React Native, Typ
 
 - Dev scripts: `@package.json` (`start`, `android`, `ios`, `web`, `lint`, `typecheck`, `test`, `test:integration`).
 - App test runner: **jest-expo** via root `npm test` (explicit project decision). Prefer this single entrypoint for app unit and DB integration tests; do not add a second app runner. Worker Vitest under `workers/api` stays separate and out of the product test path.
-- DB/RLS integration: dedicated **hosted** Supabase test project + `.env.test.local` (see `.env.test.example` and `@__tests__/support/README.md`). Service role is seed-only — never `EXPO_PUBLIC_*`. Use `npm run test:integration` (Node Jest config; fails clearly if env/DB missing). Do not point the harness at production.
+- DB/RLS integration: dedicated **hosted** Supabase test project + `.env.test.local` (see `.env.test.example` and `@__tests__/support/README.md`). Service role is seed-only — never `EXPO_PUBLIC_*`. Use `npm run test:integration` (Node Jest config; fails clearly if env/DB missing). `npm test` excludes `__tests__/integration/` (jest-expo fetch polyfill); both commands are the app test path. Do not point the harness at production.
 
 ## Coding style & naming
 

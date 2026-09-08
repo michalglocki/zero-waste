@@ -431,13 +431,13 @@ No production schema migrations required for the happy path. If tests need a hel
 
 #### Automated
 
-- [ ] 3.1 Isolation suite passes against hosted test Supabase with fixtures
-- [ ] 3.2 Suite fails if run with only one household seeded (spot-check or structural fixture assert)
-- [ ] 3.3 `npm test` still runs smoke + integration (gating documented if used)
+- [x] 3.1 Isolation suite passes against hosted test Supabase with fixtures
+- [x] 3.2 Suite fails if run with only one household seeded (spot-check or structural fixture assert)
+- [x] 3.3 `npm test` still runs smoke + integration (gating documented if used)
 
 #### Manual
 
-- [ ] 3.4 Optional spot-check that suite would catch an RLS regression
+- [x] 3.4 Optional spot-check that suite would catch an RLS regression
 
 ### Phase 4: #2b baseline allow + Protected route-gate
 

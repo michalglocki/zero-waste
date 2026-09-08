@@ -45,18 +45,29 @@ Fill `.env.test.local`:
 `.env.test.local` is gitignored (`.env*.local`). Keep service role out of the
 Expo app `.env.local` / `EXPO_PUBLIC_*`.
 
-## Run harness self-check
+## How to run tests (gating)
+
+| Command | Config | What runs |
+| ------- | ------ | --------- |
+| `npm test` | jest-expo (`package.json#jest`) | App unit/smoke under `__tests__/` **except** `__tests__/integration/` |
+| `npm run test:integration` | Node (`jest.integration.config.js`) | `__tests__/integration/**` only — harness + DB isolation |
+
+Integration is gated out of `npm test` on purpose: Expo’s fetch polyfill breaks hosted
+Supabase clients. Both remain part of the product test path; prefer `test:integration`
+whenever you need RLS proofs.
 
 ```bash
 npm run test:integration
 ```
 
-Runs `__tests__/integration/**` under a **Node** Jest config (`jest.integration.config.js`)
-— not the jest-expo preset (Expo’s fetch polyfill breaks hosted Supabase clients).
-Missing env or unreachable API → **clear failure** (no false green).
+Missing env or unreachable API → **clear failure** (no false green). The check script
+`scripts/check-integration-env.js` refuses to start Jest without credentials.
 
-App unit smoke (`npm test`) stays on jest-expo and ignores `__tests__/integration/`.
+### Suites under `__tests__/integration/`
 
+- `harness-self-check.test.ts` — seed + authenticate A/B
+- `readiness-fail-fast.test.ts` — missing env / unreachable URL
+- `db-isolation.test.ts` — risks **#1** (cross-household), **#2a** (membership deny), **#5** (anon + non-member)
 ## Privilege split
 
 | Client | Key | Use |
