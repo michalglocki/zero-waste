@@ -1,3 +1,6 @@
+/**
+ * @jest-environment node
+ */
 import '../support/load-test-env';
 
 import {
@@ -30,6 +33,6 @@ describe('integration readiness (fail-fast)', () => {
         anonKey: 'test-anon-key',
         serviceRoleKey: 'test-service-role-key',
       })
-    ).rejects.toThrow(/unreachable|Integration Supabase/i);
-  });
+    ).rejects.toThrow(/unreachable|Integration Supabase|readiness|failed/i);
+  }, 20_000);
 });

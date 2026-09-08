@@ -1,7 +1,6 @@
+import { createSeedClient } from './clients';
 import type { IntegrationEnv } from './env';
 import { formatMissingIntegrationEnvMessage, readIntegrationEnv } from './env';
-
-const HEALTH_TIMEOUT_MS = 3_000;
 
 export class IntegrationSupabaseUnavailableError extends Error {
   constructor(message: string) {
@@ -23,20 +22,17 @@ export async function requireIntegrationSupabase(
     );
   }
 
-  const healthUrl = new URL('/auth/v1/health', env.url).toString();
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), HEALTH_TIMEOUT_MS);
-
   try {
-    const response = await fetch(healthUrl, {
-      method: 'GET',
-      headers: { apikey: env.anonKey },
-      signal: controller.signal,
-    });
+    const admin = createSeedClient(env);
+    const { error } = await admin.from('households').select('id').limit(1);
 
-    if (!response.ok) {
+    if (error) {
+      const detail =
+        typeof error.message === 'string' && error.message.length > 0
+          ? error.message
+          : JSON.stringify(error);
       throw new IntegrationSupabaseUnavailableError(
-        `Integration Supabase health check failed (${response.status}) at ${healthUrl}. ` +
+        `Integration Supabase readiness check failed: ${detail}. ` +
           'Confirm SUPABASE_URL / keys and that migrations are applied (see __tests__/support/README.md).'
       );
     }
@@ -51,8 +47,6 @@ export async function requireIntegrationSupabase(
         'Check .env.test.local and network access to the hosted test project. ' +
         'See __tests__/support/README.md.'
     );
-  } finally {
-    clearTimeout(timer);
   }
 
   return env;

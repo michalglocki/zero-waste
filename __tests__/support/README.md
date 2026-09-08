@@ -51,9 +51,11 @@ Expo app `.env.local` / `EXPO_PUBLIC_*`.
 npm run test:integration
 ```
 
-Runs `__tests__/integration/**` in band. Missing env or unreachable API →
-**clear failure** (no false green). App unit smoke (`npm test`) does not need
-the test project.
+Runs `__tests__/integration/**` under a **Node** Jest config (`jest.integration.config.js`)
+— not the jest-expo preset (Expo’s fetch polyfill breaks hosted Supabase clients).
+Missing env or unreachable API → **clear failure** (no false green).
+
+App unit smoke (`npm test`) stays on jest-expo and ignores `__tests__/integration/`.
 
 ## Privilege split
 

@@ -49,7 +49,7 @@
     "lint": "expo lint",
     "typecheck": "tsc --noEmit",
     "test": "jest",
-    "test:integration": "node ./scripts/check-integration-env.js && jest --runInBand --testPathPattern=__tests__/integration"
+    "test:integration": "node ./scripts/check-integration-env.js && jest --runInBand --config jest.integration.config.js"
   },
   "jest": {
     "preset": "jest-expo",
@@ -59,7 +59,8 @@
     ],
     "testPathIgnorePatterns": [
       "/node_modules/",
-      "/workers/"
+      "/workers/",
+      "/__tests__/integration/"
     ],
     "transformIgnorePatterns": [
       "node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@sentry/react-native|native-base|react-native-svg)"

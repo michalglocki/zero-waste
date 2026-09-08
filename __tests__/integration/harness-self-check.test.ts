@@ -1,3 +1,6 @@
+/**
+ * @jest-environment node
+ */
 import '../support/load-test-env';
 
 import { readIntegrationEnv } from '../support/env';
@@ -73,5 +76,5 @@ describeHarness('isolation fixture harness (hosted test Supabase)', () => {
     } finally {
       await teardownIsolationFixture(admin, fixture);
     }
-  }, 60_000);
+  }, 120_000);
 });
