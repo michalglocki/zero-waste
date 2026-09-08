@@ -358,12 +358,12 @@ Household lists stay small; client-side prefix filter on name|barcode is enough.
 
 #### Automated
 
-- [x] 4.1 `npm run lint` passes
-- [x] 4.2 `npm run typecheck` passes
+- [x] 4.1 `npm run lint` passes — c636052
+- [x] 4.2 `npm run typecheck` passes — c636052
 
 #### Manual
 
-- [x] 4.3 Full checklist in Testing Strategy completed
-- [x] 4.4 Scan camera/typed Continue regression: nonempty add still works
-- [x] 4.5 No-code Consume last-unit confirm deletes row with no utilization event
-- [x] 4.6 Second household member sees merged no-code row
+- [x] 4.3 Full checklist in Testing Strategy completed — c636052
+- [x] 4.4 Scan camera/typed Continue regression: nonempty add still works — c636052
+- [x] 4.5 No-code Consume last-unit confirm deletes row with no utilization event — c636052
+- [x] 4.6 Second household member sees merged no-code row — c636052
