@@ -32,6 +32,7 @@
   },
   "devDependencies": {
     "@types/jest": "29.5.14",
+    "@types/node": "^26.5.0",
     "@types/react": "~19.2.2",
     "eslint": "^9.0.0",
     "eslint-config-expo": "~56.0.4",
@@ -47,10 +48,15 @@
     "web": "expo start --web",
     "lint": "expo lint",
     "typecheck": "tsc --noEmit",
-    "test": "jest"
+    "test": "jest",
+    "test:integration": "node ./scripts/check-integration-env.js && jest --runInBand --testPathPattern=__tests__/integration"
   },
   "jest": {
     "preset": "jest-expo",
+    "testMatch": [
+      "**/__tests__/**/*.test.ts",
+      "**/__tests__/**/*.test.tsx"
+    ],
     "testPathIgnorePatterns": [
       "/node_modules/",
       "/workers/"

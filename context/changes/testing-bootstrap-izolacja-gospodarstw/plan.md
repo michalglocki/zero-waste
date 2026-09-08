@@ -408,24 +408,24 @@ No production schema migrations required for the happy path. If tests need a hel
 
 #### Automated
 
-- [x] 1.1 `npm test` exits 0 with jest-expo discovering the smoke test
-- [x] 1.2 `npm run typecheck` and `npm run lint` still pass
-- [x] 1.3 No new test scripts under `workers/api` for this phase
+- [x] 1.1 `npm test` exits 0 with jest-expo discovering the smoke test — ad8eca4
+- [x] 1.2 `npm run typecheck` and `npm run lint` still pass — ad8eca4
+- [x] 1.3 No new test scripts under `workers/api` for this phase — ad8eca4
 
 #### Manual
 
-- [x] 1.4 Confirm AGENTS.md reads as an explicit “jest-expo is the app runner” decision for future agents
+- [x] 1.4 Confirm AGENTS.md reads as an explicit “jest-expo is the app runner” decision for future agents — ad8eca4
 
 ### Phase 2: Local Supabase fixture harness
 
 #### Automated
 
-- [ ] 2.1 Harness module typechecks; harness self-check can seed and authenticate A/B against local DB when Supabase is up
-- [ ] 2.2 Integration suite fails clearly when Supabase is down (no false green)
+- [x] 2.1 Harness module typechecks; harness self-check can seed and authenticate A/B against local DB when Supabase is up
+- [x] 2.2 Integration suite fails clearly when Supabase is down (no false green)
 
 #### Manual
 
-- [ ] 2.3 Developer follows documented steps once: start Supabase, apply migrations, run harness self-check successfully
+- [x] 2.3 Developer follows documented steps once: start Supabase, apply migrations, run harness self-check successfully
 
 ### Phase 3: DB isolation suite (#1, #2a, #5 primary)
 

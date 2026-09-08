@@ -19,3 +19,7 @@ Risk response intent:
 
 Planning decisions (2026-09-08): #2b assert current allow as baseline/alarm; local supabase + service-role/SQL seed; single jest-expo npm test entrypoint; Protected truth-table secondary; light test-plan §2 fix + §6.2 cookbook on ship.
 After planning, follow the downstream continuation rule → `/10x-implement`.
+
+### Phase 2 adaptation (2026-09-08)
+
+Implementing device has **no Docker** and cannot install it. Live local `supabase start` + harness seed self-check (**Progress 2.1 live path / 2.3**) are **deferred** until a Docker-capable machine (or later CI). Kept: local-Supabase-as-default docs/harness, fail-fast when env/DB missing (**2.2**), typecheck. **Phase 3+ DB isolation suites stay blocked** until a real DB target is available — do not treat skipped live seed as isolation proof.
