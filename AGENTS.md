@@ -22,8 +22,8 @@ Zero waste is a household inventory mobile MVP on Expo SDK 56 (React Native, Typ
 
 ## Build, test, and development
 
-- Dev scripts: `@package.json` (`start`, `android`, `ios`, `web`, `lint`).
-- No unit or e2e runner is configured yet; do not add one without an explicit project decision.
+- Dev scripts: `@package.json` (`start`, `android`, `ios`, `web`, `lint`, `typecheck`, `test`).
+- App test runner: **jest-expo** via root `npm test` (explicit project decision). Prefer this single entrypoint for app unit and DB integration tests; do not add a second app runner. Worker Vitest under `workers/api` stays separate and out of the product test path.
 
 ## Coding style & naming
 

@@ -49,6 +49,9 @@ supabase/.temp/
 # typescript
 *.tsbuildinfo
 
+# Jest
+coverage/
+
 example
 
 # generated native folders
