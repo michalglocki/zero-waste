@@ -46,7 +46,7 @@ Household members forget what they already have when they shop or plan a list, s
 | S-02 | barcode-open-food-facts-identify | after a scan, store the barcode and fill known name/category fields from Open Food Facts when present | S-01 | US-02, FR-006, FR-007, FR-008 | in-progress |
 | S-03 | remove-stock-item | decrease stock by 1; store the remove; drop the row when quantity hits 0 | S-01 | US-01, FR-004, FR-009 | in-progress |
 | S-04 | manual-add-without-barcode | add a product by hand (barcode number + quantity; no unit) | S-01 | FR-005, FR-007, FR-008 | in-progress |
-| S-05 | likely-empty-recommendations | open a recommendations list of quantity-1 products overdue vs their average removal interval | S-03 | US-03, FR-010, FR-011 | proposed |
+| S-05 | likely-empty-recommendations | open a recommendations list of quantity-1 products overdue vs their average removal interval | S-03 | US-03, FR-010, FR-011 | in-progress |
 
 ## Baseline
 
@@ -143,7 +143,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Unknowns:**
   - Until a product has enough stored removals to form an average interval, it does not appear in the list — Owner: team. Block: no.
 - **Risk:** Sequenced after S-03 so frequency is computed from real remove events, not guessed. Stays a separate section so it does not become an “enough” warning on lookup (resolved Q1). Frequency updates run asynchronously after each removal and are stored on the stock element.
-- **Status:** proposed
+- **Status:** in-progress
 
 ## Backlog Handoff
 
