@@ -23,3 +23,11 @@ After planning, follow the downstream continuation rule → `/10x-implement`.
 ### Phase 2 adaptations (2026-09-08)
 
 **Harness target:** dedicated **hosted** Supabase test project (migrations via `supabase link` + `db push`). Service role remains seed-only; never point at production. Phase 3 unblocks once `.env.test.local` is configured against that project with migrations applied.
+
+### Phase 4 (2026-09-08)
+
+#2b trusted-client allow baseline + Protected route-gate truth-table landed (`24f145a`).
+
+### Phase 5 (2026-09-08)
+
+Cookbook write-back landed in `context/foundation/test-plan.md`: §6.2 integration pattern (hosted test project, fixture/clients, anti-patterns), §6.6 Phase 1 surprises, light §2 split (#2a membership vs #2b trusted-client) + Worker hot-spot qualified. §3 Phase 1 Status → `complete`. Archive is a separate skill after implement closes.

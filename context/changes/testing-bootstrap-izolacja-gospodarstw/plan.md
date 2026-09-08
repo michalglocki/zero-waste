@@ -443,22 +443,22 @@ No production schema migrations required for the happy path. If tests need a hel
 
 #### Automated
 
-- [x] 4.1 #2b baseline tests pass (allow) on local DB
-- [x] 4.2 Route-gate truth-table passes under `npm test`
-- [x] 4.3 Cross-household deny from Phase 3 still passes alongside #2b allow
+- [x] 4.1 #2b baseline tests pass (allow) on local DB — 24f145a
+- [x] 4.2 Route-gate truth-table passes under `npm test` — 24f145a
+- [x] 4.3 Cross-household deny from Phase 3 still passes alongside #2b allow — 24f145a
 
 #### Manual
 
-- [x] 4.4 Read #2b test comments: future agent understands allow = known MVP debt
+- [x] 4.4 Read #2b test comments: future agent understands allow = known MVP debt — 24f145a
 
 ### Phase 5: Cookbook §6.2 + light §2 fix
 
 #### Automated
 
-- [ ] 5.1 §6.2 is no longer TBD; §6.6 notes appended
-- [ ] 5.2 Full `npm test` still green
+- [x] 5.1 §6.2 is no longer TBD; §6.6 notes appended
+- [x] 5.2 Full `npm test` still green
 
 #### Manual
 
-- [ ] 5.3 Skim §6.2 usability for a new agent
-- [ ] 5.4 Confirm §2 no longer implies Worker relevance for isolation risks
+- [x] 5.3 Skim §6.2 usability for a new agent
+- [x] 5.4 Confirm §2 no longer implies Worker relevance for isolation risks
