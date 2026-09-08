@@ -1,7 +1,7 @@
 export type StockItem = {
   id: string;
   household_id: string;
-  barcode: string;
+  barcode: string | null;
   quantity: number;
   name: string | null;
   main_category: string | null;

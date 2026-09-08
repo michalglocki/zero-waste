@@ -28,7 +28,7 @@ export function StockListRow({
   disabled = false,
 }: StockListRowProps) {
   const theme = useTheme();
-  const primary = item.name ?? item.barcode;
+  const primary = item.name ?? item.barcode ?? 'Untitled';
   const meta = secondaryLine(item);
   const removeDisabled = disabled || busy || onRemove == null;
 

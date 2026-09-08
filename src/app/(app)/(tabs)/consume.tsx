@@ -157,25 +157,26 @@ export default function ConsumeScreen() {
 
   const handleRemove = useCallback(
     async (item: StockItem) => {
-      if (busyBarcodeRef.current != null) {
+      if (busyBarcodeRef.current != null || item.barcode == null) {
         return;
       }
 
-      lockBusy(item.barcode);
+      const barcode = item.barcode;
+      lockBusy(barcode);
 
       if (item.quantity === 1) {
-        const primary = item.name ?? item.barcode;
+        const primary = item.name ?? barcode;
         const confirmed = await confirmLastUnit(primary);
         if (!confirmed) {
           unlockBusy();
           return;
         }
-        if (busyBarcodeRef.current !== item.barcode) {
+        if (busyBarcodeRef.current !== barcode) {
           return;
         }
       }
 
-      await applyRemove(item.barcode);
+      await applyRemove(barcode);
     },
     [applyRemove, lockBusy, unlockBusy]
   );
@@ -184,7 +185,9 @@ export default function ConsumeScreen() {
   const filtered =
     prefix === ''
       ? items
-      : items.filter((item) => item.barcode.toLowerCase().startsWith(prefix));
+      : items.filter((item) =>
+          (item.barcode ?? '').toLowerCase().startsWith(prefix)
+        );
 
   const showSearchEmpty = query.trim() !== '' && filtered.length === 0 && !loading;
   const showNothing =
