@@ -1,35 +1,35 @@
 import '../support/load-test-env';
 
 import {
-  LocalSupabaseUnavailableError,
-  requireLocalSupabase,
+  IntegrationSupabaseUnavailableError,
+  requireIntegrationSupabase,
 } from '../support/require-supabase';
 
 describe('integration readiness (fail-fast)', () => {
   it('rejects missing env with a clear error (no silent pass)', async () => {
-    await expect(requireLocalSupabase(null)).rejects.toBeInstanceOf(
-      LocalSupabaseUnavailableError
+    await expect(requireIntegrationSupabase(null)).rejects.toBeInstanceOf(
+      IntegrationSupabaseUnavailableError
     );
-    await expect(requireLocalSupabase(null)).rejects.toThrow(
+    await expect(requireIntegrationSupabase(null)).rejects.toThrow(
       /SUPABASE_URL.*SUPABASE_ANON_KEY.*SUPABASE_SERVICE_ROLE_KEY/s
     );
   });
 
-  it('rejects an unreachable local Supabase URL with a clear error', async () => {
+  it('rejects an unreachable integration Supabase URL with a clear error', async () => {
     await expect(
-      requireLocalSupabase({
+      requireIntegrationSupabase({
         url: 'http://127.0.0.1:1',
         anonKey: 'test-anon-key',
         serviceRoleKey: 'test-service-role-key',
       })
-    ).rejects.toBeInstanceOf(LocalSupabaseUnavailableError);
+    ).rejects.toBeInstanceOf(IntegrationSupabaseUnavailableError);
 
     await expect(
-      requireLocalSupabase({
+      requireIntegrationSupabase({
         url: 'http://127.0.0.1:1',
         anonKey: 'test-anon-key',
         serviceRoleKey: 'test-service-role-key',
       })
-    ).rejects.toThrow(/unreachable|Local Supabase/i);
+    ).rejects.toThrow(/unreachable|Integration Supabase/i);
   });
 });

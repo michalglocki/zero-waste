@@ -2,7 +2,7 @@
 
 ## Overview
 
-Adopt **jest-expo** as the app test runner (explicit AGENTS.md project decision) and prove test-plan risks **#1**, **#2a/#2b**, and **#5** against a **local Supabase** DB with real JWTs — two households, anon, and authenticated-without-membership — without mocking RLS or treating auth-layout snapshots as proof.
+Adopt **jest-expo** as the app test runner (explicit AGENTS.md project decision) and prove test-plan risks **#1**, **#2a/#2b**, and **#5** against a **hosted Supabase test project** with real JWTs — two households, anon, and authenticated-without-membership — without mocking RLS or treating auth-layout snapshots as proof.
 
 ## Current State Analysis
 
@@ -16,7 +16,7 @@ Adopt **jest-expo** as the app test runner (explicit AGENTS.md project decision)
 ## Desired End State
 
 - `npm test` runs via **jest-expo** (Expo SDK 56 official path; docs checked **2026-09-08**).
-- Local Supabase + migrations + service-role/SQL fixtures seed two households / two users (+ anon and non-member cases). Assertions use **user JWTs / anon key only**.
+- Hosted Supabase **test** project + migrations + service-role/SQL fixtures seed two households / two users (+ anon and non-member cases). Assertions use **user JWTs / anon key only**.
 - Automated proofs: A cannot read/mutate B stock; foreign/no-membership deny; anon and authenticated-without-membership cannot access/mutate stock at DB; #2b direct bypasses **still succeed** (documented baseline/alarm).
 - Secondary: Protected session×membership → screen-family truth-table (no layout snapshots).
 - `context/foundation/test-plan.md` §6.2 (+ §6.6) filled; §2 lightly corrected (#2a/#2b split; drop Worker hot-spot for these risks).
@@ -32,7 +32,7 @@ Adopt **jest-expo** as the app test runner (explicit AGENTS.md project decision)
 ## What We're NOT Doing
 
 - Hardening #2b (revoking table DML / forcing RPC-only) — that is a later security slice (pre–S-05), not this test phase
-- Hosted Supabase test project / CI test job (test-plan §3 Phase 4)
+- Hosted Supabase CI test job (test-plan §3 Phase 4) — a dedicated hosted *test* project is the Phase 2+ harness target; CI job remains deferred
 - Worker Vitest / any `workers/api` product tests (test-plan §7)
 - Quantity/add/remove correctness (#3), shared-list (#4), OFF miss (#7), e2e/Maestro
 - Mocking Supabase success in service unit tests as “proof” of authz
@@ -44,7 +44,7 @@ Adopt **jest-expo** as the app test runner (explicit AGENTS.md project decision)
 Order by **cost × signal** and risk priority:
 
 1. Unlock a single app entrypoint (`jest-expo`) so later phases and CI have somewhere to land.
-2. Build the cheapest high-signal harness: local DB + fixtures (enabler for all isolation proofs).
+2. Build the cheapest high-signal harness: hosted test DB + fixtures (enabler for all isolation proofs).
 3. Spend almost all assertion budget on **real PostgREST/RLS** for #1, #2a, #5.
 4. Encode #2b **allow** as an explicit baseline/alarm so grant drift is visible.
 5. Add a cheap Protected truth-table as secondary #5 coverage.
@@ -54,7 +54,7 @@ All DB assertions ground in `research.md`; challenge happy-path-only and “UI c
 
 ## Critical Implementation Details
 
-**Harness lifecycle:** Integration suites must require a running local Supabase with migrations applied. Fail fast with a clear skip/error if URL/keys/DB are missing — do not silently pass.
+**Harness lifecycle:** Integration suites must require a reachable hosted test Supabase with migrations applied. Fail fast with a clear skip/error if URL/keys/DB are missing — do not silently pass.
 
 **Privilege split:** Service-role (or SQL as postgres) is **seed-only**, never used for assertion clients, and never placed in `EXPO_PUBLIC_*`. Assertion clients: anon key without session, and authenticated JWTs for user A / user B / non-member.
 
@@ -124,7 +124,7 @@ Make the **explicit project decision** to add an app test runner: install and wi
 
 ### Overview
 
-Provide a repeatable **local** DB target and seed shape: two users, two households, stock in both (same barcode OK), plus ability to run as anon and as authenticated-without-membership. Seed with service-role/SQL; expose only user/anon clients to tests.
+Provide a repeatable **hosted test** DB target and seed shape: two users, two households, stock in both (same barcode OK), plus ability to run as anon and as authenticated-without-membership. Seed with service-role/SQL; expose only user/anon clients to tests.
 
 ### Test sub-phase contract
 
@@ -132,9 +132,9 @@ Provide a repeatable **local** DB target and seed shape: two users, two househol
 |-------|---------|
 | **Behavior asserted** | Fixture setup yields distinct households H_A / H_B with stock rows; clients can authenticate as A and B; non-member and anon clients are constructible |
 | **Regression caught** | Tests that accidentally share one household; seeds that omit cross-household rows (making #1 unfalsifiable) |
-| **Research source** | `research.md` Architecture Insight 4 (fixture shape); Open Question 2 → local `supabase start` |
-| **Edge / error / boundary** | Membership row removed (or never created) for non-member case; service role never used in expect(); env keys for local URL/anon/service role are gitignored |
-| **Anti-pattern avoided** | Seeding via mocked client “success”; own-household-only fixtures; putting service role in `EXPO_PUBLIC_*` |
+| **Research source** | `research.md` Architecture Insight 4 (fixture shape); Open Question 2 → hosted test project (Phase 2 adaptation) |
+| **Edge / error / boundary** | Membership row removed (or never created) for non-member case; service role never used in expect(); env keys for test URL/anon/service role are gitignored |
+| **Anti-pattern avoided** | Seeding via mocked client “success”; own-household-only fixtures; putting service role in `EXPO_PUBLIC_*`; pointing harness at production |
 
 ### Changes Required:
 
@@ -142,9 +142,9 @@ Provide a repeatable **local** DB target and seed shape: two users, two househol
 
 **File**: test harness docs and/or `package.json` / `scripts/` helper (implementer chooses minimal surface)
 
-**Intent**: Document (and optionally script) `supabase start` + apply migrations as the prerequisite for integration tests.
+**Intent**: Document (and optionally script) hosted test project + apply migrations (`supabase link` / `db push`) as the prerequisite for integration tests.
 
-**Contract**: A developer can bring up local Supabase matching `supabase/migrations/` before running integration suites. No hosted project required.
+**Contract**: A developer can target a dedicated hosted Supabase matching `supabase/migrations/` before running integration suites.
 
 #### 2. Seed module (service-role / SQL)
 
@@ -158,7 +158,7 @@ Provide a repeatable **local** DB target and seed shape: two users, two househol
 
 **File**: same support area
 
-**Intent**: Build Supabase JS clients: anon (no session), user A JWT, user B JWT, non-member JWT — using local URL + anon key.
+**Intent**: Build Supabase JS clients: anon (no session), user A JWT, user B JWT, non-member JWT — using test URL + anon key.
 
 **Contract**: Factories never silently fall back to service role for “convenience” reads during expects.
 
@@ -166,7 +166,7 @@ Provide a repeatable **local** DB target and seed shape: two users, two househol
 
 **File**: `.env.example` and/or a test-only example (e.g. `.env.test.example`)
 
-**Intent**: Document local URL, anon key, and **service role for seed only** — reinforcing that service role must not enter the Expo app env.
+**Intent**: Document test URL, anon key, and **service role for seed only** — reinforcing that service role must not enter the Expo app env.
 
 **Contract**: Clear naming split from `EXPO_PUBLIC_*`. No real secrets committed.
 
@@ -174,14 +174,14 @@ Provide a repeatable **local** DB target and seed shape: two users, two househol
 
 #### Automated Verification:
 
-- Harness module typechecks; a harness self-check test (or scripted step) can seed and authenticate A/B against local DB when Supabase is up
+- Harness module typechecks; a harness self-check test (or scripted step) can seed and authenticate A/B against the hosted test DB when configured
 - Integration suite fails clearly when Supabase is down (no false green)
 
 #### Manual Verification:
 
-- Developer follows documented steps once: start Supabase, apply migrations, run harness self-check successfully
+- Developer follows documented steps once: prepare hosted test project, apply migrations, run harness self-check successfully
 
-**Implementation Note**: Pause for human confirmation that local Supabase + seed works on their machine before Phase 3.
+**Implementation Note**: Pause for human confirmation that hosted test Supabase + seed works before Phase 3.
 
 ---
 
@@ -231,7 +231,7 @@ Highest-signal phase: against the real DB, prove cross-household isolation, memb
 
 #### Automated Verification:
 
-- Isolation suite passes against local Supabase with fixtures
+- Isolation suite passes against hosted test Supabase with fixtures
 - Suite fails if run with only one household seeded (spot-check or structural fixture assert)
 - `npm test` still runs smoke + integration (integration may be gated by env/name pattern if needed — document how)
 
@@ -325,7 +325,7 @@ Close the rollout phase by teaching future agents how to add isolation/RLS integ
 
 **File**: `context/foundation/test-plan.md`
 
-**Intent**: Replace §6.2 TBD with the fixture pattern, assertion-client rules, local Supabase prerequisite, and anti-patterns. Append 2–3 lines to §6.6 (surprises: empty list ≠ authz; #2b baseline allow; Worker hot-spot misleading).
+**Intent**: Replace §6.2 TBD with the fixture pattern, assertion-client rules, hosted test Supabase prerequisite, and anti-patterns. Append 2–3 lines to §6.6 (surprises: empty list ≠ authz; #2b baseline allow; Worker hot-spot misleading).
 
 **Contract**: §6.2 describes how to add an integration test in *this* repo. §6.1/§6.3–§6.5 remain TBD for later phases.
 
@@ -378,7 +378,7 @@ Close the rollout phase by teaching future agents how to add isolation/RLS integ
 
 ### Manual Testing Steps:
 
-1. `supabase start` + migrations; run `npm test` with integration enabled
+1. Hosted test project + migrations; run `npm test` / `npm run test:integration` with credentials configured
 2. Confirm AGENTS.md and §6.2 match what was implemented
 3. Optional: break one RLS policy locally and confirm #1 tests fail
 
@@ -420,18 +420,18 @@ No production schema migrations required for the happy path. If tests need a hel
 
 #### Automated
 
-- [x] 2.1 Harness module typechecks; harness self-check can seed and authenticate A/B against local DB when Supabase is up
-- [x] 2.2 Integration suite fails clearly when Supabase is down (no false green)
+- [x] 2.1 Harness module typechecks; harness self-check can seed and authenticate A/B against local DB when Supabase is up — 36817a9
+- [x] 2.2 Integration suite fails clearly when Supabase is down (no false green) — 36817a9
 
 #### Manual
 
-- [x] 2.3 Developer follows documented steps once: start Supabase, apply migrations, run harness self-check successfully
+- [x] 2.3 Developer follows documented steps once: start Supabase, apply migrations, run harness self-check successfully — 36817a9
 
 ### Phase 3: DB isolation suite (#1, #2a, #5 primary)
 
 #### Automated
 
-- [ ] 3.1 Isolation suite passes against local Supabase with fixtures
+- [ ] 3.1 Isolation suite passes against hosted test Supabase with fixtures
 - [ ] 3.2 Suite fails if run with only one household seeded (spot-check or structural fixture assert)
 - [ ] 3.3 `npm test` still runs smoke + integration (gating documented if used)
 

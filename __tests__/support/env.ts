@@ -7,8 +7,8 @@ export type IntegrationEnv = {
 };
 
 /**
- * Read local integration credentials. Service role is seed-only —
- * never place it in `EXPO_PUBLIC_*`.
+ * Read integration credentials for the hosted test Supabase project.
+ * Service role is seed-only — never place it in `EXPO_PUBLIC_*`.
  */
 export function readIntegrationEnv(
   source: NodeJS.ProcessEnv = process.env
@@ -29,7 +29,7 @@ export function readIntegrationEnv(
 export function formatMissingIntegrationEnvMessage(): string {
   return [
     'Integration harness requires SUPABASE_URL, SUPABASE_ANON_KEY, and SUPABASE_SERVICE_ROLE_KEY.',
-    'Copy .env.test.example → .env.test.local after `npx supabase start`, then fill keys from `npx supabase status -o env`.',
+    'Copy .env.test.example → .env.test.local and fill keys from a dedicated hosted test project (Project Settings → API).',
     'See __tests__/support/README.md.',
   ].join(' ');
 }

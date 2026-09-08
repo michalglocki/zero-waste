@@ -1,49 +1,49 @@
-# Local Supabase integration harness
+# Supabase integration harness
 
 Phase 2 of `testing-bootstrap-izolacja-gospodarstw`. These helpers seed two
 households and expose **anon / user JWT** clients for RLS assertions. The
 service role is **seed and teardown only** — never use it inside `expect()`.
 
+**Target:** a dedicated **hosted** Supabase project (not production).
+
 ## Prerequisites
 
-1. Docker Desktop (or Podman) running — **required** for live seed / RLS suites
-2. Supabase CLI available via `npx supabase`
+1. A disposable hosted Supabase project used only for automated tests
+2. Repo migrations under `supabase/migrations/` applied to that project
+3. `.env.test.local` with URL + anon + service role (never `EXPO_PUBLIC_*`)
 
-Without Docker, `npm test` still runs smoke + fail-fast readiness checks.
-`npm run test:integration` refuses to start without `.env.test.local`, and
-`requireLocalSupabase` fails clearly if the API is down. Do **not** treat that
-as household-isolation coverage — Phases 3+ need a running local stack.
+## Prepare the test project
 
-## Bring up the DB
+1. Create a project in the [Supabase dashboard](https://supabase.com/dashboard) (or reuse a throwaway one).
+2. Apply migrations (Supabase CLI login + link):
 
 ```bash
-npx supabase start
+npx supabase login
+npx supabase link --project-ref YOUR_PROJECT_REF
+npx supabase db push
 ```
 
-Migrations under `supabase/migrations/` apply on start. If you need a reset:
+3. Project Settings → API: copy **Project URL**, **anon** `public` key, and **service_role** `secret` key.
+
+Do **not** point this harness at the production / demo app project — seed creates
+and deletes auth users and stock rows.
+
+## Configure test env
 
 ```bash
-npx supabase db reset
-```
-
-## Configure test env (not Expo public)
-
-```bash
-# from repo root — copy example, then fill from CLI status
 cp .env.test.example .env.test.local
-npx supabase status -o env
 ```
 
-Map status output into `.env.test.local`:
+Fill `.env.test.local`:
 
-| `supabase status -o env` | `.env.test.local` |
-| ------------------------ | ----------------- |
-| `API_URL`                | `SUPABASE_URL` |
-| `ANON_KEY`               | `SUPABASE_ANON_KEY` |
-| `SERVICE_ROLE_KEY`       | `SUPABASE_SERVICE_ROLE_KEY` |
+| Dashboard / API setting | `.env.test.local` |
+| ----------------------- | ----------------- |
+| Project URL | `SUPABASE_URL` |
+| anon / public key | `SUPABASE_ANON_KEY` |
+| service_role / secret key | `SUPABASE_SERVICE_ROLE_KEY` |
 
-`.env.test.local` is gitignored (`.env*.local`). **Never** put the service
-role in `EXPO_PUBLIC_*` or `.env.local` for the Expo app.
+`.env.test.local` is gitignored (`.env*.local`). Keep service role out of the
+Expo app `.env.local` / `EXPO_PUBLIC_*`.
 
 ## Run harness self-check
 
@@ -51,10 +51,9 @@ role in `EXPO_PUBLIC_*` or `.env.local` for the Expo app.
 npm run test:integration
 ```
 
-This runs `__tests__/integration/**` in band. If URL/keys are missing or
-Supabase is down, the suite **fails with a clear error** (no false green).
-
-App unit smoke (`npm test`) stays independent of Docker.
+Runs `__tests__/integration/**` in band. Missing env or unreachable API →
+**clear failure** (no false green). App unit smoke (`npm test`) does not need
+the test project.
 
 ## Privilege split
 

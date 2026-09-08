@@ -7,13 +7,13 @@ import {
   seedIsolationFixture,
   teardownIsolationFixture,
 } from '../support/fixtures';
-import { requireLocalSupabase } from '../support/require-supabase';
+import { requireIntegrationSupabase } from '../support/require-supabase';
 
 /**
- * Live self-check against local Supabase. Requires `.env.test.local` and a
- * running stack (`npx supabase start`). See __tests__/support/README.md.
+ * Live self-check against the hosted test Supabase project. Requires
+ * `.env.test.local` with migrations applied. See __tests__/support/README.md.
  *
- * When credentials are configured but the API is down, `requireLocalSupabase`
+ * When credentials are configured but the API is down, `requireIntegrationSupabase`
  * fails the suite — never a false green. When credentials are absent, this
  * suite is skipped under plain `npm test` (use `npm run test:integration`
  * which refuses to start without env).
@@ -21,9 +21,9 @@ import { requireLocalSupabase } from '../support/require-supabase';
 const envFromFile = readIntegrationEnv();
 const describeHarness = envFromFile ? describe : describe.skip;
 
-describeHarness('isolation fixture harness (local Supabase)', () => {
+describeHarness('isolation fixture harness (hosted test Supabase)', () => {
   it('seeds distinct households and authenticates A and B (service role seed-only)', async () => {
-    const env = await requireLocalSupabase(envFromFile);
+    const env = await requireIntegrationSupabase(envFromFile);
     const admin = createSeedClient(env);
     const fixture = await seedIsolationFixture(admin);
 

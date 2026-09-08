@@ -253,6 +253,6 @@ No prior `research.md` artifacts found under `context/changes/**/` or `context/a
 ## Open Questions
 
 1. **#2b scope in Phase 1:** Assert current trusted-client *allows* (baseline/alarm), or defer contract-hardening assertions to a later security slice and keep Phase 1 focused on #2a membership denies?
-2. **Test DB target:** Local `supabase start` + migrations vs hosted branch/project — no committed seed/reset workflow exists yet; plan must choose and add fixtures.
+2. **Test DB target:** ~~Local `supabase start` vs hosted~~ — **resolved (Phase 2 adaptation):** dedicated **hosted** Supabase test project + `db push`; see `__tests__/support/README.md`.
 3. **jest-expo vs pure Node integration runner:** Isolation tests need authenticated Supabase clients and do not need RN rendering. Options: (a) jest-expo preset hosting Node-friendly integration files, (b) separate small Node/vitest suite for DB only + jest-expo later for units. Cost × signal favors whatever lands fastest with one `npm test` entrypoint without pulling Worker Vitest into the product path.
 4. **Backport to test-plan §2:** Should Source/response rows drop `workers/api/src/` for these risks and split Risk #2 wording into membership vs contract? (See handoff note below.)

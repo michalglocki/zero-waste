@@ -41,7 +41,7 @@ if (!url || !anon || !service) {
   console.error(
     [
       'Integration harness requires SUPABASE_URL, SUPABASE_ANON_KEY, and SUPABASE_SERVICE_ROLE_KEY.',
-      'Copy .env.test.example → .env.test.local after `npx supabase start`, then fill keys from `npx supabase status -o env`.',
+      'Copy .env.test.example → .env.test.local and fill keys from a dedicated hosted test project (Project Settings → API).',
       'See __tests__/support/README.md.',
     ].join('\n')
   );

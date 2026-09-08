@@ -3,22 +3,24 @@ import { formatMissingIntegrationEnvMessage, readIntegrationEnv } from './env';
 
 const HEALTH_TIMEOUT_MS = 3_000;
 
-export class LocalSupabaseUnavailableError extends Error {
+export class IntegrationSupabaseUnavailableError extends Error {
   constructor(message: string) {
     super(message);
-    this.name = 'LocalSupabaseUnavailableError';
+    this.name = 'IntegrationSupabaseUnavailableError';
   }
 }
 
 /**
- * Fail fast when local Supabase URL/keys are missing or the API is unreachable.
+ * Fail fast when the integration Supabase URL/keys are missing or the API is unreachable.
  * Never silently pass — callers must not treat a missing DB as green coverage.
  */
-export async function requireLocalSupabase(
+export async function requireIntegrationSupabase(
   env: IntegrationEnv | null = readIntegrationEnv()
 ): Promise<IntegrationEnv> {
   if (!env) {
-    throw new LocalSupabaseUnavailableError(formatMissingIntegrationEnvMessage());
+    throw new IntegrationSupabaseUnavailableError(
+      formatMissingIntegrationEnvMessage()
+    );
   }
 
   const healthUrl = new URL('/auth/v1/health', env.url).toString();
@@ -33,20 +35,20 @@ export async function requireLocalSupabase(
     });
 
     if (!response.ok) {
-      throw new LocalSupabaseUnavailableError(
-        `Local Supabase health check failed (${response.status}) at ${healthUrl}. ` +
-          'Run `npx supabase start` and apply migrations before integration tests.'
+      throw new IntegrationSupabaseUnavailableError(
+        `Integration Supabase health check failed (${response.status}) at ${healthUrl}. ` +
+          'Confirm SUPABASE_URL / keys and that migrations are applied (see __tests__/support/README.md).'
       );
     }
   } catch (error) {
-    if (error instanceof LocalSupabaseUnavailableError) {
+    if (error instanceof IntegrationSupabaseUnavailableError) {
       throw error;
     }
 
     const detail = error instanceof Error ? error.message : String(error);
-    throw new LocalSupabaseUnavailableError(
-      `Local Supabase is unreachable at ${env.url} (${detail}). ` +
-        'Run `npx supabase start` (Docker required) before integration tests. ' +
+    throw new IntegrationSupabaseUnavailableError(
+      `Integration Supabase is unreachable at ${env.url} (${detail}). ` +
+        'Check .env.test.local and network access to the hosted test project. ' +
         'See __tests__/support/README.md.'
     );
   } finally {

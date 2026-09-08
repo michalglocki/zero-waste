@@ -17,9 +17,9 @@ Risk response intent:
 - #2: prove stock mutations require a membership-controlled path and contract-breaking bypasses fail where the product contract requires it; challenge "UI calls RPC ⇒ DB is safe"; avoid service tests with mocked Supabase success.
 - #5: prove without session/membership there is no stock access or mutation; challenge "auth screen alone is enough"; avoid auth-layout snapshots as the only proof.
 
-Planning decisions (2026-09-08): #2b assert current allow as baseline/alarm; local supabase + service-role/SQL seed; single jest-expo npm test entrypoint; Protected truth-table secondary; light test-plan §2 fix + §6.2 cookbook on ship.
+Planning decisions (2026-09-08): #2b assert current allow as baseline/alarm; **hosted** Supabase test project + service-role/SQL seed; single jest-expo npm test entrypoint; Protected truth-table secondary; light test-plan §2 fix + §6.2 cookbook on ship.
 After planning, follow the downstream continuation rule → `/10x-implement`.
 
-### Phase 2 adaptation (2026-09-08)
+### Phase 2 adaptations (2026-09-08)
 
-Implementing device has **no Docker** and cannot install it. Live local `supabase start` + harness seed self-check (**Progress 2.1 live path / 2.3**) are **deferred** until a Docker-capable machine (or later CI). Kept: local-Supabase-as-default docs/harness, fail-fast when env/DB missing (**2.2**), typecheck. **Phase 3+ DB isolation suites stay blocked** until a real DB target is available — do not treat skipped live seed as isolation proof.
+**Harness target:** dedicated **hosted** Supabase test project (migrations via `supabase link` + `db push`). Service role remains seed-only; never point at production. Phase 3 unblocks once `.env.test.local` is configured against that project with migrations applied.
