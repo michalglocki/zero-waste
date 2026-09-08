@@ -14,7 +14,7 @@ export function ConsumeEmptyState({ kind }: ConsumeEmptyStateProps) {
       <View style={styles.container}>
         <ThemedText type="smallBold">No matching stock</ThemedText>
         <ThemedText type="small" themeColor="textSecondary">
-          No barcodes start with that prefix. Try a different search.
+          No barcodes or names start with that prefix. Try a different search.
         </ThemedText>
       </View>
     );

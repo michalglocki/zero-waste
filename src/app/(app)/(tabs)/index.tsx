@@ -63,9 +63,11 @@ export default function StockHomeScreen() {
   const filtered =
     prefix === ''
       ? items
-      : items.filter((item) =>
-          (item.barcode ?? '').toLowerCase().startsWith(prefix)
-        );
+      : items.filter((item) => {
+          const barcode = (item.barcode ?? '').toLowerCase();
+          const name = (item.name ?? '').toLowerCase();
+          return barcode.startsWith(prefix) || name.startsWith(prefix);
+        });
 
   const showSearchEmpty = query.trim() !== '' && filtered.length === 0 && !loading;
   const showNoStock = query.trim() === '' && items.length === 0 && !loading && !error;

@@ -315,29 +315,29 @@ Household lists stay small; client-side prefix filter on name|barcode is enough.
 
 #### Automated
 
-- [x] 1.1 Migration file exists with nullable barcode, partial unique, manual no-barcode add RPC, and `remove_stock_item_by_id`
-- [x] 1.2 `npm run typecheck` passes after type tweak (or phase notes deferred to Phase 2 if types land with services)
-- [x] 1.3 `npm run lint` passes
+- [x] 1.1 Migration file exists with nullable barcode, partial unique, manual no-barcode add RPC, and `remove_stock_item_by_id` — 9c366da
+- [x] 1.2 `npm run typecheck` passes after type tweak (or phase notes deferred to Phase 2 if types land with services) — 9c366da
+- [x] 1.3 `npm run lint` passes — 9c366da
 
 #### Manual
 
-- [x] 1.4 Migration applied on project Supabase
-- [x] 1.5 SQL/RPC: two adds same name `"Apples"` / `" apples "` → one null-barcode row with summed qty; different name → second row
-- [x] 1.6 `add_stock_item_by_barcode` still rejects blank; nonempty upsert still works under partial unique (`ON CONFLICT … WHERE barcode IS NOT NULL`)
-- [x] 1.7 `remove_stock_item_by_id` on barcoded row writes event; on no-code row decrements/deletes with **zero** new events; missing id → not-found, no event
+- [x] 1.4 Migration applied on project Supabase — 9c366da
+- [x] 1.5 SQL/RPC: two adds same name `"Apples"` / `" apples "` → one null-barcode row with summed qty; different name → second row — 9c366da
+- [x] 1.6 `add_stock_item_by_barcode` still rejects blank; nonempty upsert still works under partial unique (`ON CONFLICT … WHERE barcode IS NOT NULL`) — 9c366da
+- [x] 1.7 `remove_stock_item_by_id` on barcoded row writes event; on no-code row decrements/deletes with **zero** new events; missing id → not-found, no event — 9c366da
 
 ### Phase 2: Client services, Consume-by-id, shared search
 
 #### Automated
 
-- [ ] 2.1 `npm run typecheck` passes
-- [ ] 2.2 `npm run lint` passes
+- [x] 2.1 `npm run typecheck` passes
+- [x] 2.2 `npm run lint` passes
 
 #### Manual
 
-- [ ] 2.3 Consume − on a barcoded row still decrements/deletes and records an event (spot-check)
-- [ ] 2.4 Two no-code rows with different names: − on one does not busy-lock the other
-- [ ] 2.5 Stock and Consume search `"app"` finds name `Apples` with null barcode
+- [x] 2.3 Consume − on a barcoded row still decrements/deletes and records an event (spot-check)
+- [x] 2.4 Two no-code rows with different names: − on one does not busy-lock the other
+- [x] 2.5 Stock and Consume search `"app"` finds name `Apples` with null barcode
 
 ### Phase 3: Scan “No barcode?” UI
 

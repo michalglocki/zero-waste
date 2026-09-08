@@ -8,17 +8,17 @@ type StockSearchFieldProps = {
   onChangeText: (text: string) => void;
 };
 
-/** Case-insensitive barcode prefix filter input (filtering done by parent). */
+/** Case-insensitive barcode or name prefix filter input (filtering done by parent). */
 export function StockSearchField({ value, onChangeText }: StockSearchFieldProps) {
   const theme = useTheme();
 
   return (
     <TextInput
-      accessibilityLabel="Search stock by barcode"
+      accessibilityLabel="Search stock by barcode or name"
       autoCapitalize="none"
       autoCorrect={false}
       clearButtonMode="while-editing"
-      placeholder="Search by barcode"
+      placeholder="Search by barcode or name"
       placeholderTextColor={theme.textSecondary}
       value={value}
       onChangeText={onChangeText}

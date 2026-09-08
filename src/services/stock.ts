@@ -110,6 +110,34 @@ export async function addStockByBarcode(
 }
 
 /**
+ * Adds `delta` (≥ 1) for a no-code row: barcode null, merge by lower(trim(name)).
+ * Via `add_stock_item_manual_no_barcode` (atomic find-or-insert under household lock).
+ */
+export async function addStockManualNoBarcode(
+  name: string,
+  delta: number
+): Promise<StockItem> {
+  const trimmed = name.trim();
+  if (trimmed === '') {
+    throw new Error('name required');
+  }
+  if (!Number.isInteger(delta) || delta < 1) {
+    throw new Error('delta must be an integer >= 1');
+  }
+
+  const { data, error } = await supabase.rpc('add_stock_item_manual_no_barcode', {
+    p_name: trimmed,
+    p_delta: delta,
+  });
+
+  if (error) {
+    throw error;
+  }
+
+  return data as StockItem;
+}
+
+/**
  * Decrements quantity by 1 for `barcode` in the caller's household via
  * `remove_stock_item_by_barcode`. Records a utilization event server-side.
  * When quantity would hit 0, the row is deleted (`{ deleted: true }`).
@@ -125,6 +153,31 @@ export async function removeStockByBarcode(
 
   const { data, error } = await supabase.rpc('remove_stock_item_by_barcode', {
     p_barcode: trimmed,
+  });
+
+  if (error) {
+    if (isStockNotInStockRpcError(error)) {
+      throw new Error(STOCK_NOT_IN_STOCK_MESSAGE);
+    }
+    throw error;
+  }
+
+  return mapRemoveRpcPayload(data);
+}
+
+/**
+ * Decrements quantity by 1 for `id` in the caller's household via
+ * `remove_stock_item_by_id`. Records a utilization event only when the row
+ * has a nonempty barcode. Missing row → {@link STOCK_NOT_IN_STOCK_MESSAGE}.
+ */
+export async function removeStockById(id: string): Promise<RemoveStockResult> {
+  const trimmed = id.trim();
+  if (trimmed === '') {
+    throw new Error('id required');
+  }
+
+  const { data, error } = await supabase.rpc('remove_stock_item_by_id', {
+    p_id: trimmed,
   });
 
   if (error) {

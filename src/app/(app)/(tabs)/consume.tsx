@@ -20,7 +20,7 @@ import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import {
   listStockItems,
-  removeStockByBarcode,
+  removeStockById,
   STOCK_NOT_IN_STOCK_MESSAGE,
 } from '@/services/stock';
 import type { StockItem } from '@/types/stock';
@@ -43,8 +43,14 @@ async function confirmLastUnit(primaryLabel: string): Promise<boolean> {
 type ActionError = {
   message: string;
   retryable: boolean;
-  barcode: string | null;
+  id: string | null;
 };
+
+function matchesStockPrefix(item: StockItem, prefix: string): boolean {
+  const barcode = (item.barcode ?? '').toLowerCase();
+  const name = (item.name ?? '').toLowerCase();
+  return barcode.startsWith(prefix) || name.startsWith(prefix);
+}
 
 export default function ConsumeScreen() {
   const theme = useTheme();
@@ -52,18 +58,18 @@ export default function ConsumeScreen() {
   const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(true);
   const [listError, setListError] = useState<string | null>(null);
-  const [busyBarcode, setBusyBarcode] = useState<string | null>(null);
-  const busyBarcodeRef = useRef<string | null>(null);
+  const [busyId, setBusyId] = useState<string | null>(null);
+  const busyIdRef = useRef<string | null>(null);
   const [actionError, setActionError] = useState<ActionError | null>(null);
 
-  const lockBusy = useCallback((barcode: string) => {
-    busyBarcodeRef.current = barcode;
-    setBusyBarcode(barcode);
+  const lockBusy = useCallback((id: string) => {
+    busyIdRef.current = id;
+    setBusyId(id);
   }, []);
 
   const unlockBusy = useCallback(() => {
-    busyBarcodeRef.current = null;
-    setBusyBarcode(null);
+    busyIdRef.current = null;
+    setBusyId(null);
   }, []);
 
   const refetchList = useCallback(async (opts?: { quiet?: boolean }) => {
@@ -120,16 +126,16 @@ export default function ConsumeScreen() {
   );
 
   const applyRemove = useCallback(
-    async (barcode: string) => {
+    async (id: string) => {
       setActionError(null);
 
       try {
-        const result = await removeStockByBarcode(barcode);
+        const result = await removeStockById(id);
         if (result.deleted) {
-          setItems((prev) => prev.filter((row) => row.barcode !== barcode));
+          setItems((prev) => prev.filter((row) => row.id !== id));
         } else {
           setItems((prev) =>
-            prev.map((row) => (row.barcode === barcode ? result.item : row))
+            prev.map((row) => (row.id === id ? result.item : row))
           );
         }
       } catch (err) {
@@ -138,7 +144,7 @@ export default function ConsumeScreen() {
           setActionError({
             message: 'Not in stock',
             retryable: false,
-            barcode: null,
+            id: null,
           });
           await refetchList({ quiet: true });
           return;
@@ -146,7 +152,7 @@ export default function ConsumeScreen() {
         setActionError({
           message,
           retryable: true,
-          barcode,
+          id,
         });
       } finally {
         unlockBusy();
@@ -157,37 +163,33 @@ export default function ConsumeScreen() {
 
   const handleRemove = useCallback(
     async (item: StockItem) => {
-      if (busyBarcodeRef.current != null || item.barcode == null) {
+      if (busyIdRef.current != null) {
         return;
       }
 
-      const barcode = item.barcode;
-      lockBusy(barcode);
+      const id = item.id;
+      lockBusy(id);
 
       if (item.quantity === 1) {
-        const primary = item.name ?? barcode;
+        const primary = item.name ?? item.barcode ?? 'Untitled';
         const confirmed = await confirmLastUnit(primary);
         if (!confirmed) {
           unlockBusy();
           return;
         }
-        if (busyBarcodeRef.current !== barcode) {
+        if (busyIdRef.current !== id) {
           return;
         }
       }
 
-      await applyRemove(barcode);
+      await applyRemove(id);
     },
     [applyRemove, lockBusy, unlockBusy]
   );
 
   const prefix = query.trim().toLowerCase();
   const filtered =
-    prefix === ''
-      ? items
-      : items.filter((item) =>
-          (item.barcode ?? '').toLowerCase().startsWith(prefix)
-        );
+    prefix === '' ? items : items.filter((item) => matchesStockPrefix(item, prefix));
 
   const showSearchEmpty = query.trim() !== '' && filtered.length === 0 && !loading;
   const showNothing =
@@ -211,24 +213,24 @@ export default function ConsumeScreen() {
             <ThemedText type="small" themeColor="textSecondary" style={styles.actionErrorText}>
               {actionError.message}
             </ThemedText>
-            {actionError.retryable && actionError.barcode != null ? (
+            {actionError.retryable && actionError.id != null ? (
               <Pressable
                 accessibilityRole="button"
                 accessibilityLabel="Retry remove"
-                disabled={busyBarcode != null}
+                disabled={busyId != null}
                 onPress={() => {
-                  const barcode = actionError.barcode;
-                  if (barcode == null || busyBarcodeRef.current != null) {
+                  const id = actionError.id;
+                  if (id == null || busyIdRef.current != null) {
                     return;
                   }
-                  lockBusy(barcode);
-                  void applyRemove(barcode);
+                  lockBusy(id);
+                  void applyRemove(id);
                 }}
                 style={({ pressed }) => [
                   styles.retryButton,
                   {
                     backgroundColor: theme.backgroundSelected,
-                    opacity: busyBarcode != null ? 0.45 : pressed ? 0.7 : 1,
+                    opacity: busyId != null ? 0.45 : pressed ? 0.7 : 1,
                   },
                 ]}>
                 <ThemedText type="smallBold">Retry</ThemedText>
@@ -253,8 +255,8 @@ export default function ConsumeScreen() {
                 onRemove={() => {
                   void handleRemove(item);
                 }}
-                busy={busyBarcode === item.barcode}
-                disabled={busyBarcode != null}
+                busy={busyId === item.id}
+                disabled={busyId != null}
               />
             )}
             contentContainerStyle={styles.listContent}
