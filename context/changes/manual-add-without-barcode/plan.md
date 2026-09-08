@@ -330,29 +330,29 @@ Household lists stay small; client-side prefix filter on name|barcode is enough.
 
 #### Automated
 
-- [x] 2.1 `npm run typecheck` passes
-- [x] 2.2 `npm run lint` passes
+- [x] 2.1 `npm run typecheck` passes — 9e829b0
+- [x] 2.2 `npm run lint` passes — 9e829b0
 
 #### Manual
 
-- [x] 2.3 Consume − on a barcoded row still decrements/deletes and records an event (spot-check)
-- [x] 2.4 Two no-code rows with different names: − on one does not busy-lock the other
-- [x] 2.5 Stock and Consume search `"app"` finds name `Apples` with null barcode
+- [x] 2.3 Consume − on a barcoded row still decrements/deletes and records an event (spot-check) — 9e829b0
+- [x] 2.4 Two no-code rows with different names: − on one does not busy-lock the other — 9e829b0
+- [x] 2.5 Stock and Consume search `"app"` finds name `Apples` with null barcode — 9e829b0
 
 ### Phase 3: Scan “No barcode?” UI
 
 #### Automated
 
-- [ ] 3.1 `npm run typecheck` passes
-- [ ] 3.2 `npm run lint` passes
+- [x] 3.1 `npm run typecheck` passes
+- [x] 3.2 `npm run lint` passes
 
 #### Manual
 
-- [ ] 3.3 No barcode? → name `Bananas`, delta 2 → list shows Bananas qty 2; second add `bananas` delta 1 → qty 3 single row
-- [ ] 3.4 Form with barcode filled → confirm sheet opens; confirm increases barcoded row; OFF preview still soft
-- [ ] 3.5 Missing name / delta 0 → inline error, no write
-- [ ] 3.6 Save failure (e.g. offline) → message + Retry, fields retained
-- [ ] 3.7 Web: path works without camera
+- [x] 3.3 No barcode? → name `Bananas`, delta 2 → list shows Bananas qty 2; second add `bananas` delta 1 → qty 3 single row
+- [x] 3.4 Form with barcode filled → confirm sheet opens; confirm increases barcoded row; OFF preview still soft
+- [x] 3.5 Missing name / delta 0 → inline error, no write
+- [x] 3.6 Save failure (e.g. offline) → message + Retry, fields retained
+- [x] 3.7 Web: path works without camera
 
 ### Phase 4: Manual verification script
 
