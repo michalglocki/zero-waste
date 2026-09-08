@@ -343,27 +343,27 @@ Household lists stay small; client-side prefix filter on name|barcode is enough.
 
 #### Automated
 
-- [x] 3.1 `npm run typecheck` passes
-- [x] 3.2 `npm run lint` passes
+- [x] 3.1 `npm run typecheck` passes — 6d7a607
+- [x] 3.2 `npm run lint` passes — 6d7a607
 
 #### Manual
 
-- [x] 3.3 No barcode? → name `Bananas`, delta 2 → list shows Bananas qty 2; second add `bananas` delta 1 → qty 3 single row
-- [x] 3.4 Form with barcode filled → confirm sheet opens; confirm increases barcoded row; OFF preview still soft
-- [x] 3.5 Missing name / delta 0 → inline error, no write
-- [x] 3.6 Save failure (e.g. offline) → message + Retry, fields retained
-- [x] 3.7 Web: path works without camera
+- [x] 3.3 No barcode? → name `Bananas`, delta 2 → list shows Bananas qty 2; second add `bananas` delta 1 → qty 3 single row — 6d7a607
+- [x] 3.4 Form with barcode filled → confirm sheet opens; confirm increases barcoded row; OFF preview still soft — 6d7a607
+- [x] 3.5 Missing name / delta 0 → inline error, no write — 6d7a607
+- [x] 3.6 Save failure (e.g. offline) → message + Retry, fields retained — 6d7a607
+- [x] 3.7 Web: path works without camera — 6d7a607
 
 ### Phase 4: Manual verification script
 
 #### Automated
 
-- [ ] 4.1 `npm run lint` passes
-- [ ] 4.2 `npm run typecheck` passes
+- [x] 4.1 `npm run lint` passes
+- [x] 4.2 `npm run typecheck` passes
 
 #### Manual
 
-- [ ] 4.3 Full checklist in Testing Strategy completed
-- [ ] 4.4 Scan camera/typed Continue regression: nonempty add still works
-- [ ] 4.5 No-code Consume last-unit confirm deletes row with no utilization event
-- [ ] 4.6 Second household member sees merged no-code row
+- [x] 4.3 Full checklist in Testing Strategy completed
+- [x] 4.4 Scan camera/typed Continue regression: nonempty add still works
+- [x] 4.5 No-code Consume last-unit confirm deletes row with no utilization event
+- [x] 4.6 Second household member sees merged no-code row
