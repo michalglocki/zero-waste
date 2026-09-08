@@ -11,7 +11,7 @@ export type StockItem = {
   updated_at: string;
 };
 
-/** Result of `remove_stock_item_by_barcode` — never confuse delete with a null StockItem. */
+/** Result of remove-by-barcode or remove-by-id RPCs — never confuse delete with a null StockItem. */
 export type RemoveStockResult =
   | { deleted: true }
   | { deleted: false; item: StockItem };

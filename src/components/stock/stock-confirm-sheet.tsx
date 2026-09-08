@@ -8,6 +8,7 @@ import {
   View,
 } from 'react-native';
 
+import { parseAddDelta } from '@/components/stock/stock-quantity';
 import { ThemedText } from '@/components/themed-text';
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
@@ -35,18 +36,6 @@ type StockConfirmSheetProps = {
 };
 
 type LookupStatus = 'idle' | 'looking' | 'found' | 'not_found' | 'error';
-
-/** Parse add-delta: integer ≥ 0; non-numeric / negative → 0. */
-export function parseAddDelta(raw: string): number {
-  const trimmed = raw.trim();
-  if (trimmed === '') {
-    return 0;
-  }
-  if (!/^\d+$/.test(trimmed)) {
-    return 0;
-  }
-  return Number.parseInt(trimmed, 10);
-}
 
 function secondaryLine(identity: OffMappedIdentity | null): string | null {
   if (!identity) {

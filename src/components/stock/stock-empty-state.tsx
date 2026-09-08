@@ -29,12 +29,13 @@ export function StockEmptyState({ kind }: StockEmptyStateProps) {
     <View style={styles.container}>
       <ThemedText type="smallBold">No stock yet</ThemedText>
       <ThemedText type="small" themeColor="textSecondary">
-        Your household stock list is empty. Scan a barcode to add the first item.
+        Your household stock list is empty. Open Scan to add the first item (barcode or
+        No barcode?).
       </ThemedText>
       <Link href="/(app)/scan" asChild>
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel="Scan barcode"
+          accessibilityLabel="Open Scan to add stock"
           style={({ pressed }) => [
             styles.scanButton,
             {

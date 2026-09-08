@@ -8,7 +8,7 @@ import {
   View,
 } from 'react-native';
 
-import { parseAddDelta } from '@/components/stock/stock-confirm-sheet';
+import { parseAddDelta } from '@/components/stock/stock-quantity';
 import { ThemedText } from '@/components/themed-text';
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
