@@ -9,6 +9,8 @@ type StockListRowProps = {
   item: StockItem;
   /** When set, shows a − control (Consume tab only). */
   onRemove?: () => void;
+  /** When set, shows an Ignore control (Recommendations tab only). */
+  onIgnore?: () => void;
   busy?: boolean;
   disabled?: boolean;
 };
@@ -24,6 +26,7 @@ function secondaryLine(item: StockItem): string | null {
 export function StockListRow({
   item,
   onRemove,
+  onIgnore,
   busy = false,
   disabled = false,
 }: StockListRowProps) {
@@ -31,6 +34,7 @@ export function StockListRow({
   const primary = item.name ?? item.barcode ?? 'Untitled';
   const meta = secondaryLine(item);
   const removeDisabled = disabled || busy || onRemove == null;
+  const ignoreDisabled = disabled || busy || onIgnore == null;
 
   return (
     <View style={styles.row}>
@@ -55,7 +59,7 @@ export function StockListRow({
           disabled={removeDisabled}
           onPress={onRemove}
           style={({ pressed }) => [
-            styles.removeButton,
+            styles.actionButton,
             {
               backgroundColor: theme.backgroundElement,
               opacity: removeDisabled ? 0.45 : pressed ? 0.7 : 1,
@@ -65,6 +69,28 @@ export function StockListRow({
             <ActivityIndicator color={theme.text} />
           ) : (
             <ThemedText type="smallBold">−</ThemedText>
+          )}
+        </Pressable>
+      ) : null}
+      {onIgnore != null ? (
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={`Ignore recommendation for ${primary}`}
+          accessibilityState={{ disabled: ignoreDisabled, busy }}
+          disabled={ignoreDisabled}
+          onPress={onIgnore}
+          style={({ pressed }) => [
+            styles.actionButton,
+            styles.ignoreButton,
+            {
+              backgroundColor: theme.backgroundElement,
+              opacity: ignoreDisabled ? 0.45 : pressed ? 0.7 : 1,
+            },
+          ]}>
+          {busy ? (
+            <ActivityIndicator color={theme.text} />
+          ) : (
+            <ThemedText type="smallBold">Ignore</ThemedText>
           )}
         </Pressable>
       ) : null}
@@ -89,11 +115,14 @@ const styles = StyleSheet.create({
     minWidth: 32,
     textAlign: 'right',
   },
-  removeButton: {
+  actionButton: {
     alignItems: 'center',
     justifyContent: 'center',
     minWidth: 44,
     minHeight: 44,
     borderRadius: Spacing.two,
+  },
+  ignoreButton: {
+    paddingHorizontal: Spacing.two,
   },
 });

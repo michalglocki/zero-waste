@@ -282,30 +282,30 @@ Household-scoped lists and single-row recompute on write are enough for MVP size
 
 #### Automated
 
-- [x] 2.1 `npm run typecheck` passes with extended `StockItem` and new exports
-- [x] 2.2 `npm run lint` passes
-- [x] 2.3 List and ignore RPCs exist (Phase 1 or Phase 2 migration) with `EXECUTE` for `authenticated`; client wrappers call RPCs only
-- [x] 2.4 Integration test asserts: ignore RPC hides the row from the list RPC; a subsequent add for that identity clears ignore so the row can reappear when overdue (extend `__tests__/integration/` — not optional)
+- [x] 2.1 `npm run typecheck` passes with extended `StockItem` and new exports — 59b1701
+- [x] 2.2 `npm run lint` passes — 59b1701
+- [x] 2.3 List and ignore RPCs exist (Phase 1 or Phase 2 migration) with `EXECUTE` for `authenticated`; client wrappers call RPCs only — 59b1701
+- [x] 2.4 Integration test asserts: ignore RPC hides the row from the list RPC; a subsequent add for that identity clears ignore so the row can reappear when overdue (extend `__tests__/integration/` — not optional) — 59b1701
 
 #### Manual
 
-- [x] 2.5 Temporary hook or SQL+service call: after enough history and qty=1 overdue, list RPC returns the row; after ignore RPC, list omits it; after add or remove on that product, ignore cleared and row can reappear when overdue again
-- [x] 2.6 Confirm overdue eligibility still holds when device clock is skewed (list must not use client `Date` for the threshold)
+- [x] 2.5 Temporary hook or SQL+service call: after enough history and qty=1 overdue, list RPC returns the row; after ignore RPC, list omits it; after add or remove on that product, ignore cleared and row can reappear when overdue again — 59b1701
+- [x] 2.6 Confirm overdue eligibility still holds when device clock is skewed (list must not use client `Date` for the threshold) — 59b1701
 
 ### Phase 3: Recommendations tab UI + manual checklist
 
 #### Automated
 
-- [ ] 3.1 `npm run typecheck` passes
-- [ ] 3.2 `npm run lint` passes
-- [ ] 3.3 `manual-verification.md` exists in this change folder
-- [ ] 3.4 Recommendations route and tab triggers exist on native and web entry points
+- [x] 3.1 `npm run typecheck` passes
+- [x] 3.2 `npm run lint` passes
+- [x] 3.3 `manual-verification.md` exists in this change folder
+- [x] 3.4 Recommendations route and tab triggers exist on native and web entry points
 
 #### Manual
 
-- [ ] 3.5 Tabs show Stock | Consume | Recommendations | Household on native and web
-- [ ] 3.6 With seeded history, overdue qty-1 barcode and no-code rows appear; non-overdue / count<2 / qty>1 do not
-- [ ] 3.7 Elapsed exactly equal to average still appears (≥) — seed recipe: set util_last_removed_at = now() - (util_avg_interval_seconds * interval '1 second') on a qty=1 eligible row, confirm list includes it
-- [ ] 3.8 Ignore removes from list; next remove (qty>1) or add brings eligibility back when predicates hold
-- [ ] 3.9 Recommendations has Ignore only (no − / no Scan); Consume still owns −; Stock still browse/add
-- [ ] 3.10 Empty Recommendations copy is specific and has no Scan CTA
+- [x] 3.5 Tabs show Stock | Consume | Recommendations | Household on native and web
+- [x] 3.6 With seeded history, overdue qty-1 barcode and no-code rows appear; non-overdue / count<2 / qty>1 do not
+- [x] 3.7 Elapsed exactly equal to average still appears (≥) — seed recipe: set util_last_removed_at = now() - (util_avg_interval_seconds * interval '1 second') on a qty=1 eligible row, confirm list includes it
+- [x] 3.8 Ignore removes from list; next remove (qty>1) or add brings eligibility back when predicates hold
+- [x] 3.9 Recommendations has Ignore only (no − / no Scan); Consume still owns −; Stock still browse/add
+- [x] 3.10 Empty Recommendations copy is specific and has no Scan CTA

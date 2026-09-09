@@ -5,7 +5,11 @@ import { ThemedText } from '@/components/themed-text';
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 
-function WebHeaderNav({ active }: { active: 'stock' | 'consume' | 'household' }) {
+function WebHeaderNav({
+  active,
+}: {
+  active: 'stock' | 'consume' | 'recommendations' | 'household';
+}) {
   const theme = useTheme();
 
   return (
@@ -40,6 +44,23 @@ function WebHeaderNav({ active }: { active: 'stock' | 'consume' | 'household' })
           <ThemedText type="smallBold">Consume</ThemedText>
         </Pressable>
       </Link>
+      <Link href="/(app)/(tabs)/recommendations" asChild>
+        <Pressable
+          accessibilityRole="link"
+          accessibilityState={{ selected: active === 'recommendations' }}
+          style={({ pressed }) => [
+            styles.navItem,
+            {
+              backgroundColor:
+                active === 'recommendations'
+                  ? theme.backgroundSelected
+                  : theme.backgroundElement,
+              opacity: pressed ? 0.7 : 1,
+            },
+          ]}>
+          <ThemedText type="smallBold">Recommendations</ThemedText>
+        </Pressable>
+      </Link>
       <Link href="/(app)/(tabs)/household" asChild>
         <Pressable
           accessibilityRole="link"
@@ -60,7 +81,7 @@ function WebHeaderNav({ active }: { active: 'stock' | 'consume' | 'household' })
 }
 
 /**
- * Web: Stock ↔ Consume ↔ Household in the header (no native tab bar).
+ * Web: Stock ↔ Consume ↔ Recommendations ↔ Household in the header (no native tab bar).
  * Scan/join are sibling Stack screens on the parent `(app)` layout.
  */
 export default function TabsLayout() {
@@ -85,6 +106,14 @@ export default function TabsLayout() {
           title: 'Consume',
           headerTitle: 'Zero waste',
           headerRight: () => <WebHeaderNav active="consume" />,
+        }}
+      />
+      <Stack.Screen
+        name="recommendations"
+        options={{
+          title: 'Recommendations',
+          headerTitle: 'Zero waste',
+          headerRight: () => <WebHeaderNav active="recommendations" />,
         }}
       />
       <Stack.Screen

@@ -28,6 +28,14 @@ export default function AppTabs() {
         />
       </NativeTabs.Trigger>
 
+      <NativeTabs.Trigger name="recommendations">
+        <NativeTabs.Trigger.Label>Recommendations</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Icon
+          sf={{ default: 'lightbulb', selected: 'lightbulb.fill' }}
+          md="lightbulb"
+        />
+      </NativeTabs.Trigger>
+
       <NativeTabs.Trigger name="household">
         <NativeTabs.Trigger.Label>Household</NativeTabs.Trigger.Label>
         <NativeTabs.Trigger.Icon
