@@ -296,16 +296,16 @@ Household-scoped lists and single-row recompute on write are enough for MVP size
 
 #### Automated
 
-- [x] 3.1 `npm run typecheck` passes
-- [x] 3.2 `npm run lint` passes
-- [x] 3.3 `manual-verification.md` exists in this change folder
-- [x] 3.4 Recommendations route and tab triggers exist on native and web entry points
+- [x] 3.1 `npm run typecheck` passes — a7b0351
+- [x] 3.2 `npm run lint` passes — a7b0351
+- [x] 3.3 `manual-verification.md` exists in this change folder — a7b0351
+- [x] 3.4 Recommendations route and tab triggers exist on native and web entry points — a7b0351
 
 #### Manual
 
-- [x] 3.5 Tabs show Stock | Consume | Recommendations | Household on native and web
-- [x] 3.6 With seeded history, overdue qty-1 barcode and no-code rows appear; non-overdue / count<2 / qty>1 do not
-- [x] 3.7 Elapsed exactly equal to average still appears (≥) — seed recipe: set util_last_removed_at = now() - (util_avg_interval_seconds * interval '1 second') on a qty=1 eligible row, confirm list includes it
-- [x] 3.8 Ignore removes from list; next remove (qty>1) or add brings eligibility back when predicates hold
-- [x] 3.9 Recommendations has Ignore only (no − / no Scan); Consume still owns −; Stock still browse/add
-- [x] 3.10 Empty Recommendations copy is specific and has no Scan CTA
+- [x] 3.5 Tabs show Stock | Consume | Recommendations | Household on native and web — a7b0351
+- [x] 3.6 With seeded history, overdue qty-1 barcode and no-code rows appear; non-overdue / count<2 / qty>1 do not — a7b0351
+- [x] 3.7 Elapsed exactly equal to average still appears (≥) — seed recipe: set util_last_removed_at = now() - (util_avg_interval_seconds * interval '1 second') on a qty=1 eligible row, confirm list includes it — a7b0351
+- [x] 3.8 Ignore removes from list; next remove (qty>1) or add brings eligibility back when predicates hold — a7b0351
+- [x] 3.9 Recommendations has Ignore only (no − / no Scan); Consume still owns −; Stock still browse/add — a7b0351
+- [x] 3.10 Empty Recommendations copy is specific and has no Scan CTA — a7b0351
