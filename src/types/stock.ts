@@ -7,6 +7,10 @@ export type StockItem = {
   main_category: string | null;
   auxiliary_category: string | null;
   pack_size: string | null;
+  util_removal_count: number;
+  util_last_removed_at: string | null;
+  util_avg_interval_seconds: number | null;
+  recommendation_ignored_at: string | null;
   created_at: string;
   updated_at: string;
 };

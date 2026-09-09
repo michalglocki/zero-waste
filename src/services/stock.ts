@@ -6,7 +6,7 @@ import type {
 } from '@/types/stock';
 
 const STOCK_SELECT =
-  'id, household_id, barcode, quantity, name, main_category, auxiliary_category, pack_size, created_at, updated_at';
+  'id, household_id, barcode, quantity, name, main_category, auxiliary_category, pack_size, util_removal_count, util_last_removed_at, util_avg_interval_seconds, recommendation_ignored_at, created_at, updated_at';
 
 /** Stable message for missing-row remove — UI maps this to "Not in stock". */
 export const STOCK_NOT_IN_STOCK_MESSAGE = 'stock item not found';
@@ -167,8 +167,8 @@ export async function removeStockByBarcode(
 
 /**
  * Decrements quantity by 1 for `id` in the caller's household via
- * `remove_stock_item_by_id`. Records a utilization event only when the row
- * has a nonempty barcode. Missing row → {@link STOCK_NOT_IN_STOCK_MESSAGE}.
+ * `remove_stock_item_by_id`. Always records a utilization event (barcode or
+ * name_key). Missing row → {@link STOCK_NOT_IN_STOCK_MESSAGE}.
  */
 export async function removeStockById(id: string): Promise<RemoveStockResult> {
   const trimmed = id.trim();
@@ -188,6 +188,46 @@ export async function removeStockById(id: string): Promise<RemoveStockResult> {
   }
 
   return mapRemoveRpcPayload(data);
+}
+
+/**
+ * Lists qty-1 products overdue vs their average removal interval for the
+ * caller's household. Overdue is evaluated with server `now()` inside
+ * `list_likely_empty_recommendations` — do not re-filter with device time.
+ */
+export async function listLikelyEmptyRecommendations(): Promise<StockItem[]> {
+  const { data, error } = await supabase.rpc('list_likely_empty_recommendations');
+
+  if (error) {
+    throw error;
+  }
+
+  return (data ?? []) as StockItem[];
+}
+
+/**
+ * Sets `recommendation_ignored_at` for a current-household stock row via
+ * `ignore_stock_recommendation`. Clears only on a later add/remove RPC.
+ * Missing / wrong-household row → {@link STOCK_NOT_IN_STOCK_MESSAGE}.
+ */
+export async function ignoreRecommendation(itemId: string): Promise<StockItem> {
+  const trimmed = itemId.trim();
+  if (trimmed === '') {
+    throw new Error('id required');
+  }
+
+  const { data, error } = await supabase.rpc('ignore_stock_recommendation', {
+    p_id: trimmed,
+  });
+
+  if (error) {
+    if (isStockNotInStockRpcError(error)) {
+      throw new Error(STOCK_NOT_IN_STOCK_MESSAGE);
+    }
+    throw error;
+  }
+
+  return data as StockItem;
 }
 
 /**

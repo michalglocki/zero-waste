@@ -1,7 +1,8 @@
 /**
  * @jest-environment node
  *
- * S-05 Phase 1 — utilization frequency / XOR events / recompute-on-re-add.
+ * S-05 Phase 1–2 — utilization frequency / XOR events / recompute-on-re-add /
+ * list + ignore recommendation RPCs.
  * Assertion clients use user JWTs only — service role is seed/teardown.
  *
  * Run: `npm run test:integration` (requires migrated test project + .env.test.local).
@@ -54,7 +55,7 @@ async function readUtilStock(
   return data;
 }
 
-describeUtil('DB utilization frequency (S-05 Phase 1)', () => {
+describeUtil('DB utilization frequency (S-05 Phase 1–2)', () => {
   let admin: SupabaseClient;
   let fixture: IsolationFixture;
   let clients: AssertionClients;
@@ -231,6 +232,95 @@ describeUtil('DB utilization frequency (S-05 Phase 1)', () => {
     expect(bumpError).toBeNull();
     expect(bumped?.quantity).toBe(2);
     expect(bumped?.recommendation_ignored_at).toBeNull();
+  });
+
+  it('ignore RPC hides row from list RPC; add clears ignore so overdue row can reappear', async () => {
+    const barcode = `util-rec-${runId}`;
+    const { data: added, error: addError } = await clients.userA.rpc(
+      'add_stock_item_by_barcode',
+      { p_barcode: barcode, p_delta: 3 }
+    );
+    expect(addError).toBeNull();
+
+    await clients.userA.rpc('remove_stock_item_by_barcode', { p_barcode: barcode });
+    await new Promise((resolve) => setTimeout(resolve, 1100));
+    await clients.userA.rpc('remove_stock_item_by_barcode', { p_barcode: barcode });
+
+    const afterTwo = await readUtilStock(clients.userA, added!.id);
+    expect(afterTwo).toEqual(
+      expect.objectContaining({
+        quantity: 1,
+        util_removal_count: 2,
+      })
+    );
+    expect(afterTwo?.util_avg_interval_seconds).not.toBeNull();
+    expect(afterTwo!.util_avg_interval_seconds!).toBeGreaterThan(0);
+
+    // Force overdue on DB clock without inventing events (list uses server now()).
+    const avg = afterTwo!.util_avg_interval_seconds!;
+    const { error: forceOverdueError } = await admin
+      .from('stock_items')
+      .update({
+        // Far enough past that clock skew between client seed and DB now() still qualifies.
+        util_last_removed_at: new Date(Date.now() - Math.ceil(avg + 60) * 1000).toISOString(),
+        recommendation_ignored_at: null,
+      })
+      .eq('id', added!.id);
+    expect(forceOverdueError).toBeNull();
+
+    const { data: listed, error: listError } = await clients.userA.rpc(
+      'list_likely_empty_recommendations'
+    );
+    expect(listError).toBeNull();
+    expect(listed).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ id: added!.id, barcode, quantity: 1 }),
+      ])
+    );
+
+    const { data: ignored, error: ignoreError } = await clients.userA.rpc(
+      'ignore_stock_recommendation',
+      { p_id: added!.id }
+    );
+    expect(ignoreError).toBeNull();
+    expect(ignored?.recommendation_ignored_at).toBeTruthy();
+
+    const { data: afterIgnore, error: listAfterIgnoreError } = await clients.userA.rpc(
+      'list_likely_empty_recommendations'
+    );
+    expect(listAfterIgnoreError).toBeNull();
+    expect((afterIgnore ?? []).some((row: { id: string }) => row.id === added!.id)).toBe(
+      false
+    );
+
+    const { data: bumped, error: bumpError } = await clients.userA.rpc(
+      'add_stock_item_by_barcode',
+      { p_barcode: barcode, p_delta: 1 }
+    );
+    expect(bumpError).toBeNull();
+    expect(bumped?.quantity).toBe(2);
+    expect(bumped?.recommendation_ignored_at).toBeNull();
+
+    // qty=2 is ineligible; restore qty=1 + overdue with ignore still null.
+    const { error: restoreError } = await admin
+      .from('stock_items')
+      .update({
+        quantity: 1,
+        util_last_removed_at: new Date(Date.now() - Math.ceil(avg + 60) * 1000).toISOString(),
+        recommendation_ignored_at: null,
+      })
+      .eq('id', added!.id);
+    expect(restoreError).toBeNull();
+
+    const { data: listedAgain, error: listAgainError } = await clients.userA.rpc(
+      'list_likely_empty_recommendations'
+    );
+    expect(listAgainError).toBeNull();
+    expect(listedAgain).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ id: added!.id, barcode, quantity: 1 }),
+      ])
+    );
   });
 
   it('member A cannot read household B utilization events or util columns', async () => {

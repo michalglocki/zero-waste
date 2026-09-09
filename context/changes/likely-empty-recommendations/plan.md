@@ -267,30 +267,30 @@ Household-scoped lists and single-row recompute on write are enough for MVP size
 
 #### Automated
 
-- [x] 1.1 Migration file exists with XOR events, util/ignore columns, helper, one-shot util backfill, and all four RPCs updated
-- [x] 1.2 `npm run typecheck` passes if generated/types touched
-- [x] 1.3 `npm run lint` passes
-- [x] 1.4 `npm run test:integration` passes for extended isolation/utilization cases (when `.env.test.local` present; fail clearly if env missing — do not point at production)
+- [x] 1.1 Migration file exists with XOR events, util/ignore columns, helper, one-shot util backfill, and all four RPCs updated — f02f42b
+- [x] 1.2 `npm run typecheck` passes if generated/types touched — f02f42b
+- [x] 1.3 `npm run lint` passes — f02f42b
+- [x] 1.4 `npm run test:integration` passes for extended isolation/utilization cases (when `.env.test.local` present; fail clearly if env missing — do not point at production) — f02f42b
 
 #### Manual
 
-- [x] 1.5 Migration applied to the project Supabase instance
-- [x] 1.6 SQL/RPC smoke: barcode path still decrements/deletes + events; no-code remove writes `name_key` event; after two removes on qty>1, util columns populated; delete last unit + re-add restores count/avg from events; second household cannot read first’s events/util
-- [x] 1.7 After migrate, an existing live row that already had ≥2 events shows non-zero `util_removal_count` / avg without a new remove (backfill)
+- [x] 1.5 Migration applied to the project Supabase instance — f02f42b
+- [x] 1.6 SQL/RPC smoke: barcode path still decrements/deletes + events; no-code remove writes `name_key` event; after two removes on qty>1, util columns populated; delete last unit + re-add restores count/avg from events; second household cannot read first’s events/util — f02f42b
+- [x] 1.7 After migrate, an existing live row that already had ≥2 events shows non-zero `util_removal_count` / avg without a new remove (backfill) — f02f42b
 
 ### Phase 2: Client types, recommendations list, ignore write
 
 #### Automated
 
-- [ ] 2.1 `npm run typecheck` passes with extended `StockItem` and new exports
-- [ ] 2.2 `npm run lint` passes
-- [ ] 2.3 List and ignore RPCs exist (Phase 1 or Phase 2 migration) with `EXECUTE` for `authenticated`; client wrappers call RPCs only
-- [ ] 2.4 Integration test asserts: ignore RPC hides the row from the list RPC; a subsequent add for that identity clears ignore so the row can reappear when overdue (extend `__tests__/integration/` — not optional)
+- [x] 2.1 `npm run typecheck` passes with extended `StockItem` and new exports
+- [x] 2.2 `npm run lint` passes
+- [x] 2.3 List and ignore RPCs exist (Phase 1 or Phase 2 migration) with `EXECUTE` for `authenticated`; client wrappers call RPCs only
+- [x] 2.4 Integration test asserts: ignore RPC hides the row from the list RPC; a subsequent add for that identity clears ignore so the row can reappear when overdue (extend `__tests__/integration/` — not optional)
 
 #### Manual
 
-- [ ] 2.5 Temporary hook or SQL+service call: after enough history and qty=1 overdue, list RPC returns the row; after ignore RPC, list omits it; after add or remove on that product, ignore cleared and row can reappear when overdue again
-- [ ] 2.6 Confirm overdue eligibility still holds when device clock is skewed (list must not use client `Date` for the threshold)
+- [x] 2.5 Temporary hook or SQL+service call: after enough history and qty=1 overdue, list RPC returns the row; after ignore RPC, list omits it; after add or remove on that product, ignore cleared and row can reappear when overdue again
+- [x] 2.6 Confirm overdue eligibility still holds when device clock is skewed (list must not use client `Date` for the threshold)
 
 ### Phase 3: Recommendations tab UI + manual checklist
 
