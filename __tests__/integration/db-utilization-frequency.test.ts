@@ -55,6 +55,28 @@ async function readUtilStock(
   return data;
 }
 
+/**
+ * Service-role seed: backdate existing utilization events so consecutive removes
+ * produce a measurable avg without wall-clock sleeps. Next remove RPC recomputes
+ * util_* from the seeded timestamps.
+ */
+async function backdateBarcodeEvents(
+  seed: SupabaseClient,
+  householdId: string,
+  barcode: string,
+  removedAtIso: string
+): Promise<void> {
+  const { error } = await seed
+    .from('stock_utilization_events')
+    .update({ removed_at: removedAtIso })
+    .eq('household_id', householdId)
+    .eq('barcode', barcode);
+
+  if (error) {
+    throw new Error(`backdate utilization events failed: ${error.message}`);
+  }
+}
+
 describeUtil('DB utilization frequency (S-05 Phase 1–2)', () => {
   let admin: SupabaseClient;
   let fixture: IsolationFixture;
@@ -139,8 +161,13 @@ describeUtil('DB utilization frequency (S-05 Phase 1–2)', () => {
     );
     expect(afterOne?.util_last_removed_at).toBeTruthy();
 
-    // Distinct removed_at so (max−min)/(N−1) is measurable.
-    await new Promise((resolve) => setTimeout(resolve, 1100));
+    // Distinct removed_at so (max−min)/(N−1) is measurable (no wall sleep).
+    await backdateBarcodeEvents(
+      admin,
+      fixture.userA.householdId,
+      barcode,
+      new Date(Date.now() - 3600_000).toISOString()
+    );
 
     const { data: second, error: r2 } = await clients.userA.rpc(
       'remove_stock_item_by_barcode',
@@ -172,7 +199,12 @@ describeUtil('DB utilization frequency (S-05 Phase 1–2)', () => {
     expect(addError).toBeNull();
 
     await clients.userA.rpc('remove_stock_item_by_barcode', { p_barcode: barcode });
-    await new Promise((resolve) => setTimeout(resolve, 1100));
+    await backdateBarcodeEvents(
+      admin,
+      fixture.userA.householdId,
+      barcode,
+      new Date(Date.now() - 3600_000).toISOString()
+    );
 
     const { data: lastRemove, error: lastError } = await clients.userA.rpc(
       'remove_stock_item_by_barcode',
@@ -243,7 +275,12 @@ describeUtil('DB utilization frequency (S-05 Phase 1–2)', () => {
     expect(addError).toBeNull();
 
     await clients.userA.rpc('remove_stock_item_by_barcode', { p_barcode: barcode });
-    await new Promise((resolve) => setTimeout(resolve, 1100));
+    await backdateBarcodeEvents(
+      admin,
+      fixture.userA.householdId,
+      barcode,
+      new Date(Date.now() - 3600_000).toISOString()
+    );
     await clients.userA.rpc('remove_stock_item_by_barcode', { p_barcode: barcode });
 
     const afterTwo = await readUtilStock(clients.userA, added!.id);
