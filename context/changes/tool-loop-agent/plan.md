@@ -318,12 +318,12 @@ None for the Expo app. New package is additive. Operators need an OpenRouter API
 
 #### Automated
 
-- [x] 3.1 npm run typecheck passes with CLI
-- [x] 3.2 CLI without OPENROUTER_API_KEY exits non-zero
-- [x] 3.3 Empty git diff HEAD exits non-zero with clear message
+- [x] 3.1 npm run typecheck passes with CLI — 6517282
+- [x] 3.2 CLI without OPENROUTER_API_KEY exits non-zero — 6517282
+- [x] 3.3 Empty git diff HEAD exits non-zero with clear message — 6517282
 
 #### Manual
 
-- [x] 3.4 npm start with key + uncommitted diff prints schema-valid JSON
-- [x] 3.5 Library exports (factory + schema + prompts) usable for future eval
-- [x] 3.6 README documents default OpenRouter model id and OPENROUTER_MODEL override
+- [x] 3.4 npm start with key + uncommitted diff prints schema-valid JSON — 6517282
+- [x] 3.5 Library exports (factory + schema + prompts) usable for future eval — 6517282
+- [x] 3.6 README documents default OpenRouter model id and OPENROUTER_MODEL override — 6517282
