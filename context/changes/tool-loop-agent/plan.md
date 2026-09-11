@@ -291,28 +291,28 @@ None for the Expo app. New package is additive. Operators need an OpenRouter API
 
 #### Automated
 
-- [x] 1.1 packages/code-reviewer/package.json and tsconfig.json exist
-- [x] 1.2 npm install completes in packages/code-reviewer
-- [x] 1.3 Root tsconfig.json excludes packages
-- [x] 1.4 Root Jest config ignores /packages/
-- [x] 1.5 Root eslint.config.js ignores packages/**
-- [x] 1.6 Package .gitignore covers .env secrets and node_modules while .env.example stays trackable
+- [x] 1.1 packages/code-reviewer/package.json and tsconfig.json exist — 3589406
+- [x] 1.2 npm install completes in packages/code-reviewer — 3589406
+- [x] 1.3 Root tsconfig.json excludes packages — 3589406
+- [x] 1.4 Root Jest config ignores /packages/ — 3589406
+- [x] 1.5 Root eslint.config.js ignores packages/** — 3589406
+- [x] 1.6 Package .gitignore covers .env secrets and node_modules while .env.example stays trackable — 3589406
 
 #### Manual
 
-- [x] 1.7 Package layout matches nested workers/api isolation
+- [x] 1.7 Package layout matches nested workers/api isolation — 3589406
 
 ### Phase 2: Agent Modules (Schemas, Prompts, Factory)
 
 #### Automated
 
-- [ ] 2.1 npm run typecheck passes with agent modules
-- [ ] 2.2 createCodeReviewer accepts apiKey + optional model and returns ToolLoopAgent
-- [ ] 2.3 Schema module exports Zod schema for Output.object
+- [x] 2.1 npm run typecheck passes with agent modules
+- [x] 2.2 createCodeReviewer accepts apiKey + optional model and returns ToolLoopAgent
+- [x] 2.3 Schema module exports Zod schema for Output.object
 
 #### Manual
 
-- [ ] 2.4 Schemas / prompts / agent live in separate modules
+- [x] 2.4 Schemas / prompts / agent live in separate modules
 
 ### Phase 3: CLI Entrypoint & Fail-Fast Behavior
 
