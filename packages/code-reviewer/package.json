@@ -4,8 +4,10 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/lib.ts"
+    ".": "./src/lib.ts",
+    "./cli": "./src/index.ts"
   },
+
   "scripts": {
     "typecheck": "tsc --noEmit",
     "start": "tsx src/index.ts"

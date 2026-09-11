@@ -306,24 +306,24 @@ None for the Expo app. New package is additive. Operators need an OpenRouter API
 
 #### Automated
 
-- [x] 2.1 npm run typecheck passes with agent modules
-- [x] 2.2 createCodeReviewer accepts apiKey + optional model and returns ToolLoopAgent
-- [x] 2.3 Schema module exports Zod schema for Output.object
+- [x] 2.1 npm run typecheck passes with agent modules — 6589e6a
+- [x] 2.2 createCodeReviewer accepts apiKey + optional model and returns ToolLoopAgent — 6589e6a
+- [x] 2.3 Schema module exports Zod schema for Output.object — 6589e6a
 
 #### Manual
 
-- [x] 2.4 Schemas / prompts / agent live in separate modules
+- [x] 2.4 Schemas / prompts / agent live in separate modules — 6589e6a
 
 ### Phase 3: CLI Entrypoint & Fail-Fast Behavior
 
 #### Automated
 
-- [ ] 3.1 npm run typecheck passes with CLI
-- [ ] 3.2 CLI without OPENROUTER_API_KEY exits non-zero
-- [ ] 3.3 Empty git diff HEAD exits non-zero with clear message
+- [x] 3.1 npm run typecheck passes with CLI
+- [x] 3.2 CLI without OPENROUTER_API_KEY exits non-zero
+- [x] 3.3 Empty git diff HEAD exits non-zero with clear message
 
 #### Manual
 
-- [ ] 3.4 npm start with key + uncommitted diff prints schema-valid JSON
-- [ ] 3.5 Library exports (factory + schema + prompts) usable for future eval
-- [ ] 3.6 README documents default OpenRouter model id and OPENROUTER_MODEL override
+- [x] 3.4 npm start with key + uncommitted diff prints schema-valid JSON
+- [x] 3.5 Library exports (factory + schema + prompts) usable for future eval
+- [x] 3.6 README documents default OpenRouter model id and OPENROUTER_MODEL override
