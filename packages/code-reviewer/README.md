@@ -46,3 +46,6 @@ const { output } = await agent.generate({ prompt: buildReviewPrompt(diff) });
 ```
 
 The CLI resolves env and passes `apiKey` / `model` into `createCodeReviewer`. Override the model with `CURSOR_MODEL` or `createCodeReviewer({ apiKey, model })`.
+
+<!-- reviewer-smoke: noop marker for PR validation 2026-09-12T14:59:36.9448606+02:00 -->
+
