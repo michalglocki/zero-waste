@@ -1,9 +1,11 @@
 export {
   createCodeReviewer,
   type CodeReviewerAgent,
+  type CodeReviewerGenerateResult,
   type CreateCodeReviewerOptions,
 } from './agent/create-code-reviewer.js';
-export { DEFAULT_OPENROUTER_MODEL } from './agent/default-model.js';
+export { DEFAULT_CURSOR_MODEL } from './agent/default-model.js';
+export { parseReviewOutput } from './agent/parse-review-output.js';
 export { codeReviewInstructions } from './prompts/instructions.js';
 export { buildReviewPrompt } from './prompts/build-review-prompt.js';
 export {

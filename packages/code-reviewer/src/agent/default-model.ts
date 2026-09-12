@@ -1,6 +1,5 @@
 /**
- * Default OpenRouter chat model when callers omit `model`.
- * Chosen from the live OpenRouter catalog at implement time (coding-friendly, widely available).
- * Override via `createCodeReviewer({ model })` or CLI `OPENROUTER_MODEL`.
+ * Default Cursor model when callers omit `model`.
+ * Override via `createCodeReviewer({ model })` or CLI `CURSOR_MODEL`.
  */
-export const DEFAULT_OPENROUTER_MODEL = 'deepseek/deepseek-v4.1-flash';
+export const DEFAULT_CURSOR_MODEL = 'composer-2.5';

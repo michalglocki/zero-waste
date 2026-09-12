@@ -37,10 +37,10 @@ async function getUncommittedDiff(): Promise<string> {
 export async function main(): Promise<void> {
   loadCliEnv();
 
-  const apiKey = process.env.OPENROUTER_API_KEY?.trim();
+  const apiKey = process.env.CURSOR_API_KEY?.trim();
   if (!apiKey) {
     fail(
-      'Missing OPENROUTER_API_KEY. Set it in the environment or packages/code-reviewer/.env (see .env.example).',
+      'Missing CURSOR_API_KEY. Set it in the environment, GitHub Actions secrets, or packages/code-reviewer/.env (see .env.example).',
     );
   }
 
@@ -55,7 +55,7 @@ export async function main(): Promise<void> {
     fail('No uncommitted changes to review (git diff HEAD is empty).');
   }
 
-  const model = process.env.OPENROUTER_MODEL?.trim() || undefined;
+  const model = process.env.CURSOR_MODEL?.trim() || undefined;
 
   try {
     const agent = createCodeReviewer({ apiKey, model });

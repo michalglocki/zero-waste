@@ -3,18 +3,19 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": ">=22.13.0"
+  },
   "exports": {
     ".": "./src/lib.ts",
     "./cli": "./src/index.ts"
   },
-
   "scripts": {
     "typecheck": "tsc --noEmit",
     "start": "tsx src/index.ts"
   },
   "dependencies": {
-    "@openrouter/ai-sdk-provider": "^3.0.0",
-    "ai": "^7.0.0",
+    "@cursor/sdk": "^1.0.31",
     "dotenv": "^16.4.0",
     "zod": "^4.0.0"
   },
