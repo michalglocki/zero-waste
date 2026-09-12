@@ -2,6 +2,7 @@ export {
   createCodeReviewer,
   type CodeReviewerAgent,
   type CodeReviewerGenerateResult,
+  type CodeReviewerRuntime,
   type CreateCodeReviewerOptions,
 } from './agent/create-code-reviewer.js';
 export { DEFAULT_CURSOR_MODEL } from './agent/default-model.js';

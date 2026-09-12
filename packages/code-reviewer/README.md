@@ -19,6 +19,10 @@ cp .env.example .env
 | `CURSOR_MODEL` | no | Cursor model id. Default: `composer-2.5` |
 | `REVIEW_BASE` | no | Git ref for branch/PR reviews. Runs `git diff <base>...HEAD` instead of uncommitted `git diff HEAD`. |
 | `REVIEW_FAIL_ON` | no | Comma-separated verdicts that exit `2` (e.g. `request_changes`). |
+| `CURSOR_RUNTIME` | no | `local` (default) or `cloud`. GitHub Actions uses `cloud` (local agents segfaulted on GHA runners). |
+| `CURSOR_CLOUD_REPO_URL` | no | Optional repo URL when `CURSOR_RUNTIME=cloud`. |
+| `CURSOR_CLOUD_STARTING_REF` | no | Optional starting ref / SHA for cloud repo checkout. |
+| `CURSOR_CLOUD_PR_URL` | no | Optional PR URL attached to the cloud agent. |
 
 CLI flag equivalent: `--base origin/main` (overrides `REVIEW_BASE`).
 
@@ -55,11 +59,11 @@ On `pull_request` (opened / synchronize / reopened), the workflow:
 
 1. Checks out with full history (`fetch-depth: 0`)
 2. Installs this package (`npm ci`)
-3. Runs with `REVIEW_BASE=origin/<base_ref>` and `REVIEW_FAIL_ON=request_changes`
-4. Posts (or updates) a PR comment with the JSON report
+3. Runs with Cursor **cloud** runtime, `REVIEW_BASE=origin/<base_ref>`, and `REVIEW_FAIL_ON=request_changes`
+4. Posts (or updates) a PR comment with the JSON report (only when output parses as review JSON)
 5. Fails the check when the reviewer errors or returns `request_changes`
 
-Requires secret `CURSOR_API_KEY`. Same-repo PRs only for secret access (fork PRs do not receive secrets by default).
+Requires secret `CURSOR_API_KEY`. Same-repo PRs only (fork PRs are skipped by the workflow `if:`).
 
 ## Library use
 

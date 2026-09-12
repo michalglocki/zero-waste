@@ -95,9 +95,28 @@ export async function main(): Promise<void> {
   }
 
   const model = process.env.CURSOR_MODEL?.trim() || undefined;
+  const runtime =
+    process.env.CURSOR_RUNTIME?.trim().toLowerCase() === 'cloud'
+      ? 'cloud'
+      : 'local';
+  const cloudRepoUrl = process.env.CURSOR_CLOUD_REPO_URL?.trim() || undefined;
+  const cloudStartingRef =
+    process.env.CURSOR_CLOUD_STARTING_REF?.trim() || undefined;
+  const cloudPrUrl = process.env.CURSOR_CLOUD_PR_URL?.trim() || undefined;
 
   try {
-    const agent = createCodeReviewer({ apiKey, model });
+    const agent = createCodeReviewer({
+      apiKey,
+      model,
+      runtime,
+      cloud: cloudRepoUrl
+        ? {
+            repoUrl: cloudRepoUrl,
+            startingRef: cloudStartingRef,
+            prUrl: cloudPrUrl,
+          }
+        : undefined,
+    });
     const result = await agent.generate({
       prompt: buildReviewPrompt(diff, base ? { base } : undefined),
     });
