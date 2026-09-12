@@ -273,25 +273,25 @@ Prompt will grow (condensed rubric) but must stay well under full `requirements.
 
 #### Automated
 
-- [x] 1.1 `npm run typecheck` in `packages/code-reviewer` passes
-- [x] 1.2 `npm test` in `packages/code-reviewer` passes, including ≤4 / security ≤5 / mean &lt;6 / error finding → fail, and clean high scores → approve
-- [x] 1.3 Finalized stdout shape includes `scores`, `passFail`, and mapped `verdict` (asserted in tests)
+- [x] 1.1 `npm run typecheck` in `packages/code-reviewer` passes — a5d477a
+- [x] 1.2 `npm test` in `packages/code-reviewer` passes, including ≤4 / security ≤5 / mean &lt;6 / error finding → fail, and clean high scores → approve — a5d477a
+- [x] 1.3 Finalized stdout shape includes `scores`, `passFail`, and mapped `verdict` (asserted in tests) — a5d477a
 
 #### Manual
 
-- [x] 1.4 Spot-check that `requirements.md` §3 wording still matches the finalize implementation (no silent threshold drift)
+- [x] 1.4 Spot-check that `requirements.md` §3 wording still matches the finalize implementation (no silent threshold drift) — a5d477a
 
 ### Phase 2: Prompts + requirements commit
 
 #### Automated
 
-- [ ] 2.1 `npm run typecheck` still passes after prompt string changes
-- [ ] 2.2 Existing finalize tests still pass (prompts must not break schema contracts)
+- [x] 2.1 `npm run typecheck` still passes after prompt string changes
+- [x] 2.2 Existing finalize tests still pass (prompts must not break schema contracts)
 
 #### Manual
 
-- [ ] 2.3 Read `instructions.ts` once: confirms EN keys, five criteria, and “CLI owns pass/fail”
-- [ ] 2.4 Confirm `requirements.md` is tracked by git (`git status` no longer shows it as untracked)
+- [x] 2.3 Read `instructions.ts` once: confirms EN keys, five criteria, and “CLI owns pass/fail”
+- [x] 2.4 Confirm `requirements.md` is tracked by git (`git status` no longer shows it as untracked)
 
 ### Phase 3: CI comment + workflow hardening + docs
 
