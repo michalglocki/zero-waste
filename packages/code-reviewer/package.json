@@ -1,0 +1,29 @@
+{
+  "name": "code-reviewer",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "exports": {
+    ".": "./src/lib.ts",
+    "./cli": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "tsx --test src/agent/finalize-review-output.test.ts src/format-review-comment.test.ts",
+    "format-comment": "tsx src/print-review-comment.ts",
+    "start": "tsx src/index.ts"
+  },
+  "dependencies": {
+    "@cursor/sdk": "^1.0.31",
+    "dotenv": "^16.4.0",
+    "zod": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.5.0"
+  }
+}

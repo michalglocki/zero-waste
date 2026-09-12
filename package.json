@@ -60,6 +60,7 @@
     "testPathIgnorePatterns": [
       "/node_modules/",
       "/workers/",
+      "/packages/",
       "/__tests__/integration/"
     ],
     "transformIgnorePatterns": [
