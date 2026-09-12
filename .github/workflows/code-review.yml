@@ -63,7 +63,18 @@ jobs:
             cat "$GITHUB_WORKSPACE/review-stderr.txt" >&2 || true
             echo "---- stdout ----" >&2
             cat "$GITHUB_WORKSPACE/review-output.json" >&2 || true
+            # Never treat malformed output as success, even if tsx exited 0.
+            if [[ "$status" -eq 0 ]]; then
+              exit 1
+            fi
             exit "$status"
+          fi
+
+          # Also enforce REVIEW_FAIL_ON via parsed JSON (belt-and-suspenders vs CLI exit code).
+          if node -e "const j=JSON.parse(require('fs').readFileSync(process.env.GITHUB_WORKSPACE + '/review-output.json','utf8')); const fail=(process.env.REVIEW_FAIL_ON||'').split(',').map(s=>s.trim()).filter(Boolean); if(fail.includes(j.verdict)) process.exit(2);"; then
+            :
+          else
+            echo "exit_code=2" >> "$GITHUB_OUTPUT"
           fi
           exit 0
 
@@ -106,7 +117,7 @@ jobs:
           } > "$body_file"
 
           existing="$(gh api "repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments?per_page=100" \
-            --jq '[.[] | select(.user.type=="Bot" and (.body | contains("## Code reviewer report"))) | .id] | first' \
+            --jq '[.[] | select(.user.type=="Bot" and (.body | contains("## Code reviewer report"))) | .id] | last' \
             || true)"
           if [[ -n "${existing}" && "${existing}" != "null" ]]; then
             gh api --method PATCH "repos/${{ github.repository }}/issues/comments/${existing}" \
