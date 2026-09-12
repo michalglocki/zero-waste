@@ -12,7 +12,8 @@
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "test": "tsx --test src/agent/finalize-review-output.test.ts",
+    "test": "tsx --test src/agent/finalize-review-output.test.ts src/format-review-comment.test.ts",
+    "format-comment": "tsx src/print-review-comment.ts",
     "start": "tsx src/index.ts"
   },
   "dependencies": {

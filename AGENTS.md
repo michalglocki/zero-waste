@@ -35,4 +35,4 @@ Zero waste is a household inventory mobile MVP on Expo SDK 56 (React Native, Typ
 ## Commit & pull request guidelines
 
 - History is short and informal; prefer concise, why-focused subjects.
-- No `.github/workflows` yet — CI is planned in `@context/foundation/tech-stack.md` but not present.
+- Scored PR code review runs on same-repo PRs via `.github/workflows/code-review.yml` (`packages/code-reviewer`; fork PRs skipped — no secrets). App lint/test/deploy CI is still future (see `@context/foundation/tech-stack.md`).
