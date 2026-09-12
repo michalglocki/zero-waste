@@ -303,6 +303,6 @@ Prompt will grow (condensed rubric) but must stay well under full `requirements.
 
 #### Manual
 
-- [ ] 3.4 Open or push a same-repo PR (or dry-run comment markdown locally from a fixture JSON) and confirm scores table + Werdykt + summary appear above JSON details
-- [ ] 3.5 Confirm check still fails on `request_changes` and passes on `approve`/`comment`
-- [ ] 3.6 Skim AGENTS.md + README for accuracy on workflows / fork policy
+- [x] 3.4 Open or push a same-repo PR (or dry-run comment markdown locally from a fixture JSON) and confirm scores table + Werdykt + summary appear above JSON details — 562b196
+- [x] 3.5 Confirm check still fails on `request_changes` and passes on `approve`/`comment` — 562b196
+- [x] 3.6 Skim AGENTS.md + README for accuracy on workflows / fork policy — 562b196

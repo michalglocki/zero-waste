@@ -1,7 +1,7 @@
 ---
 change_id: ci-cd-code-review
 title: Align CI code reviewer with scored pass/fail requirements
-status: implementing
+status: implemented
 created: 2026-09-12
 updated: 2026-09-12
 archived_at: null
