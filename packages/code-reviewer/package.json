@@ -12,6 +12,7 @@
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
+    "test": "tsx --test src/agent/finalize-review-output.test.ts",
     "start": "tsx src/index.ts"
   },
   "dependencies": {

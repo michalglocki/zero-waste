@@ -1,19 +1,19 @@
 import {
-  reviewOutputSchema,
-  type ReviewOutput,
+  reviewAgentOutputSchema,
+  type ReviewAgentOutput,
 } from '../schemas/review-output.js';
 
 /**
- * Extract and validate review JSON from agent text (raw JSON or fenced block).
+ * Extract and validate agent review JSON (scores required; verdict/passFail optional).
  */
-export function parseReviewOutput(text: string): ReviewOutput {
+export function parseReviewOutput(text: string): ReviewAgentOutput {
   const candidates = collectJsonCandidates(text);
   const errors: string[] = [];
 
   for (const candidate of candidates) {
     try {
       const parsed: unknown = JSON.parse(candidate);
-      return reviewOutputSchema.parse(parsed);
+      return reviewAgentOutputSchema.parse(parsed);
     } catch (error) {
       errors.push(error instanceof Error ? error.message : String(error));
     }

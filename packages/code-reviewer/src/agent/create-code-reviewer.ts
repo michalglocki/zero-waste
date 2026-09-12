@@ -1,6 +1,7 @@
 import { Agent, CursorAgentError } from '@cursor/sdk';
 
 import { DEFAULT_CURSOR_MODEL } from './default-model.js';
+import { finalizeReviewOutput } from './finalize-review-output.js';
 import { parseReviewOutput } from './parse-review-output.js';
 import { codeReviewInstructions } from '../prompts/instructions.js';
 import type { ReviewOutput } from '../schemas/review-output.js';
@@ -91,7 +92,7 @@ ${input.prompt}`;
         throw new Error('Cursor agent returned an empty result');
       }
 
-      return { output: parseReviewOutput(text) };
+      return { output: finalizeReviewOutput(parseReviewOutput(text)) };
     },
   };
 }
