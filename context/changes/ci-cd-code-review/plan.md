@@ -297,9 +297,9 @@ Prompt will grow (condensed rubric) but must stay well under full `requirements.
 
 #### Automated
 
-- [x] 3.1 `npm test` and `npm run typecheck` pass locally for the package
-- [x] 3.2 Workflow YAML step order: install → typecheck → test → review → comment → fail
-- [x] 3.3 Formatter unit test passes
+- [x] 3.1 `npm test` and `npm run typecheck` pass locally for the package — 562b196
+- [x] 3.2 Workflow YAML step order: install → typecheck → test → review → comment → fail — 562b196
+- [x] 3.3 Formatter unit test passes — 562b196
 
 #### Manual
 
